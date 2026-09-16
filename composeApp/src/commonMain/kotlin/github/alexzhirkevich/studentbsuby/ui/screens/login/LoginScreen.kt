@@ -78,6 +78,12 @@ fun LoginScreen(
     val scaffoldState = rememberScaffoldState()
 
     LaunchedEffect(key1 = Unit) {
+        if (loginViewModel.captchaImage.current !is DataState.Success) {
+            loginViewModel.handle(LoginEvent.UpdateClicked(false))
+        }
+    }
+
+    LaunchedEffect(key1 = Unit) {
         loginViewModel.error.collect {
             if (it.isNotBlank())
                 scaffoldState.snackbarHostState.showSnackbar(it)

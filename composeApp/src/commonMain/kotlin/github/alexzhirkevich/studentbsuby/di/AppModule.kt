@@ -48,9 +48,11 @@ val appModule = module {
 
     // Default preferences file ("github.alexzhirkevich.studentbsuby_preferences"),
     // including the one-time scrub of legacy plaintext username/password keys.
-    factory<ObservableSettings> { provideDefaultSettings() }
+    single<ObservableSettings> { provideDefaultSettings() }
 
-    factory<ObservableSettings>(named("CredentialsPrefs")) {
+    // One instance per process: opening the encrypted store is expensive and every
+    // consumer (login repository, username providers) must read the same file.
+    single<ObservableSettings>(named("CredentialsPrefs")) {
         provideSecureSettings("github.alexzhirkevich.studentbsuby_credentials")
     }
 

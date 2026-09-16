@@ -25,7 +25,12 @@ class TimetableRepository(
 
         val username = usernameProvider.username.takeIf(String::isNotBlank)
             ?: throw UsernameNotFoundException()
-        // TODO: refactor
+
+        // The schedule page marks the weekday buttons disabled when no schedule is
+        // published for the student; posting them back only produces an error page.
+        if (!timetableApi.hasSchedule)
+            return List(6) { emptyList() }
+
         return coroutineScope {
             (0..6).map { day ->
                 async {

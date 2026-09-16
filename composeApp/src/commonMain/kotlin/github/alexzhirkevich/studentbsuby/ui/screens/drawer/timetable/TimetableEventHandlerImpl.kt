@@ -44,10 +44,8 @@ private class UpdateRequestedHandler(
     override suspend fun launch() {
         isUpdatingMapper.map(false)
         update(DataSource.All)
-        connectivityManager.isNetworkConnected.collect {
-            if (it){
-                update(DataSource.Remote)
-            }
+        connectivityManager.onReconnected {
+            update(DataSource.Remote)
         }
     }
     override suspend fun handle(event: TimetableEvent.UpdateRequested) {
@@ -89,7 +87,7 @@ private class UpdateRequestedHandler(
             .catch {
                 if (timetableMapper.current !is DataState.Success){
                     timetableMapper.map(DataState.Error(
-                        Res.string.error_load_timetable, it
+                        it.toErrorMessage(Res.string.error_load_timetable), it
                     ))
                 }
             }

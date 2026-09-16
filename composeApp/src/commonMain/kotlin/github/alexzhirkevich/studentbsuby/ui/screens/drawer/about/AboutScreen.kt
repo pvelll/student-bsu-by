@@ -7,8 +7,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Email
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -133,19 +131,6 @@ fun AboutScreen(
                 horizontalArrangement = Arrangement.SpaceAround,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                IconButton(
-                    onClick = {
-                        aboutViewModel.handle(AboutEvent.EmailClicked)
-                    }
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Email,
-                        contentDescription = "E-mail",
-                        tint = MaterialTheme.colors.primary,
-                        modifier = Modifier.size(32.dp)
-                    )
-                }
-
                 IconButton(
                     onClick = {
                         aboutViewModel.handle(AboutEvent.TgClicked)

@@ -53,6 +53,7 @@ import github.alexzhirkevich.studentbsuby.ui.common.toolbar.ScrollStrategy
 import github.alexzhirkevich.studentbsuby.ui.common.toolbar.rememberCollapsingToolbarScaffoldState
 import github.alexzhirkevich.studentbsuby.util.*
 import github.alexzhirkevich.studentbsuby.util.communication.collectAsState
+import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -424,13 +425,29 @@ private fun AllSemesters(
     val state = rememberPagerState(pageCount = { subjects.size })
     val scope = rememberCoroutineScope()
 
-    LaunchedEffect(Unit) {
-        if (state.pageCount > initialSemester)
+    // The current semester arrives asynchronously (cache, then web). Follow it until the
+    // user picks a semester; only user driven page changes are reported back, otherwise
+    // the very first composition would already mark the semester as chosen by the user.
+    var userSelected by rememberSaveable { mutableStateOf(false) }
+    val latestInitialSemester by rememberUpdatedState(initialSemester)
+
+    LaunchedEffect(initialSemester, subjects.size) {
+        if (!userSelected && initialSemester in subjects.indices &&
+            state.currentPage != initialSemester
+        ) {
             state.scrollToPage(initialSemester)
+        }
     }
 
-    LaunchedEffect(key1 = state.currentPage){
-        onSemesterChanged(state.currentPage)
+    LaunchedEffect(state) {
+        snapshotFlow { state.currentPage }
+            .drop(1)
+            .collect { page ->
+                if (page != latestInitialSemester) {
+                    userSelected = true
+                }
+                onSemesterChanged(page)
+            }
     }
 
     Scaffold(

@@ -1,15 +1,13 @@
 package github.alexzhirkevich.studentbsuby.repo
 
-import com.fleeksoft.ksoup.Ksoup
 import com.russhwolf.settings.ObservableSettings
-import github.alexzhirkevich.studentbsuby.api.AllSubjectsRequest
+import github.alexzhirkevich.studentbsuby.api.AspNetForm
 import github.alexzhirkevich.studentbsuby.api.ProfileApi
-import github.alexzhirkevich.studentbsuby.api.isSessionExpired
 import github.alexzhirkevich.studentbsuby.dao.SubjectsDao
 import github.alexzhirkevich.studentbsuby.data.models.Subject
-import github.alexzhirkevich.studentbsuby.util.exceptions.*
-import io.ktor.client.statement.bodyAsText
-import io.ktor.http.isSuccess
+import github.alexzhirkevich.studentbsuby.util.exceptions.IncorrectResponseException
+import github.alexzhirkevich.studentbsuby.util.exceptions.UsernameNotFoundException
+import github.alexzhirkevich.studentbsuby.util.runCatchingSuspend
 import kotlinx.coroutines.flow.Flow
 
 private const val PREF_CURRENTSEMESTER_ = "PREF_CURRENTSEMESTER_"
@@ -27,94 +25,35 @@ class SubjectsRepository(
         replaceCacheIf(old,new) && new.isNotEmpty()
     }
 
+    /**
+     * Loads the marks of all sessions.
+     *
+     * The page renders only the current session by default; all sessions are requested
+     * with the "Все сессии" postback, which must carry the view state of a freshly
+     * loaded page. If that postback fails for any reason the current session from the
+     * loaded page is returned instead, so the screen degrades instead of breaking.
+     */
     override suspend fun getFromWeb(): List<List<Subject>> {
-        // TODO: refactor
         val username = usernameProvider.username
 
         if (username.isEmpty())
             throw UsernameNotFoundException()
 
-        val string = profileApi.subjects(profileApi.AllSubjectsRequest).html()
+        val currentSessionPage = profileApi.studProgress().html()
 
-        if (!string.contains("updatePanel")) {
-            throw IncorrectResponseException()
-        }
+        val allSessionsPage = runCatchingSuspend {
+            val form = AspNetForm.parse(currentSessionPage)
+            if (!form.isValid)
+                throw IncorrectResponseException()
+            profileApi.subjects(form.postback(ProfileApi.ALL_SESSIONS_EVENT_TARGET)).html()
+        }.getOrNull()?.takeIf { it.contains(ProfileApi.PROGRESS_TABLE_ID) }
 
-        val firstTableIndex = string.indexOfFirst { it == '<' }
-        val lastTableIndex = string.indexOfLast { it == '>' }
+        val page = allSessionsPage ?: currentSessionPage
 
-        if (firstTableIndex == -1 || lastTableIndex == -1)
-            throw IncorrectResponseException()
-
-        val html = string.substring(firstTableIndex, lastTableIndex)
-
-        val jsoup = Ksoup.parse(html)
-
-        val numbers = jsoup.getElementsByClass("styleNumberBody")
-            .map {
-                it.text().toIntOrNull()
-            }
-        val lessons = jsoup.getElementsByClass("styleLessonBody").map {
-            it.text()
-        }
-        val hours = jsoup.getElementsByClass("styleHoursSmallBody").map {
-            it.text().toIntOrNull() ?: 0
-        }.chunked(6)
-        val zach = jsoup.getElementsByClass("styleZachBody").map {
-            it.text().takeIf { !it.contains("&nbsp") && it.isNotEmpty() && it.isNotBlank() }
-        }
-        val exam = jsoup.getElementsByClass("styleExamBody").map {
-            it.text()
-                .takeIf { it.contains("&nbsp").not() && it.isNotEmpty() && it.isNotBlank() }
-        }
-
-        //not same size
-        if (setOf(numbers.size, lessons.size, hours.size, zach.size, exam.size).size != 1)
+        if (!page.contains(ProfileApi.PROGRESS_TABLE_ID))
             throw IncorrectResponseException()
 
-        val subjects = mutableListOf<List<Subject>>()
-        var semester = 1
-        var list = mutableListOf<Subject>()
-
-        var prevNumber = Int.MIN_VALUE
-
-        for (i in numbers.indices) {
-            val number = numbers[i] ?: continue
-            if (prevNumber > number) {
-                subjects.add(list)
-                semester++
-                list = mutableListOf()
-            }
-
-            prevNumber = number
-            list.add(
-                Subject(
-                    semester = semester,
-                    owner = username,
-                    name = lessons[i],
-                    lectures = hours[i][0],
-                    practice = hours[i][1],
-                    labs = hours[i][2],
-                    seminars = hours[i][3],
-                    facults = hours[i][4],
-                    ksr = hours[i][5],
-                    hasCredit = zach[i] != null,
-                    creditPassed = if (zach[i]?.contains("+") == false &&
-                        zach[i]?.contains("-") == false
-                    )
-                        null else zach[i]?.contains("+"),
-                    creditMark = zach[i]?.filter { it.isDigit() }?.toIntOrNull(),
-                    creditRetakes = zach[i]?.filter { it == '\'' }?.length ?: 0,
-                    hasExam = exam[i] != null,
-                    examMark = exam[i]?.filter(Char::isDigit)?.toIntOrNull(),
-                    examRetakes = exam[i]?.filter { it == '\'' }?.length ?: 0
-                )
-            )
-            if (i == numbers.size-1){
-                subjects.add(list)
-            }
-        }
-        return subjects
+        return SubjectsParser.parse(page, username)
     }
 
     override suspend fun saveToCache(value: List<List<Subject>>) {
@@ -158,29 +97,8 @@ class CurrentSemesterRepository(
     }
 
     override suspend fun getFromWeb(): Int? {
-
-        val resp = profileApi.studProgress()
-        if (!resp.status.isSuccess())
-            throw FailResponseException(resp.status.value)
-
-        val string = resp.bodyAsText()
-
-        if (string.isSessionExpired())
-            throw SessionExpiredException()
-
-        val semesterId = "ctl00_ctl00_ContentPlaceHolder0_ContentPlaceHolder1_ctlStudProgress1_selSemester"
-        val jsoup = Ksoup.parse(string)
-        var sem = 1
-        return kotlin.runCatching {
-            do {
-                val elem = jsoup.getElementById("$semesterId$sem")?.also {
-                    if (it.html().contains("<b>", true))
-                        return@runCatching sem - 1
-                    else sem++
-                }
-            } while (elem != null)
-            return@runCatching null
-        }.getOrNull()
+        val page = profileApi.studProgress().html()
+        return SubjectsParser.currentSemesterIndex(page)
     }
 
     override suspend fun saveToCache(value: Int) {

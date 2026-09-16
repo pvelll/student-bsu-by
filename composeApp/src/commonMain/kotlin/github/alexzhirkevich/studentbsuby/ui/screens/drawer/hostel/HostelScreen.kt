@@ -21,7 +21,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.zIndex
-import coil3.compose.AsyncImage
+import androidx.compose.foundation.Image
+import androidx.compose.ui.layout.ContentScale
+import coil3.compose.AsyncImagePainter
+import coil3.compose.rememberAsyncImagePainter
 import github.alexzhirkevich.studentbsuby.resources.Res
 import github.alexzhirkevich.studentbsuby.resources.close
 import github.alexzhirkevich.studentbsuby.resources.error_load_timetable
@@ -185,14 +188,10 @@ private fun ProvidedHostelScreen(
                     }
                 }
             }
-            image?.let {
-                AsyncImage(
-                    model = it,
-                    contentDescription = null,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .aspectRatio(1.4f)
-                        .alpha(scaffoldState.toolbarState.progress)
+            image?.takeIf(String::isNotBlank)?.let {
+                HostelHeaderImage(
+                    url = it,
+                    alpha = scaffoldState.toolbarState.progress
                 )
             }
         }) {
@@ -390,5 +389,29 @@ private fun NonProvidedHostelScreen(
                 }
             }
         }
+    }
+}
+
+/**
+ * Photo of the hostel above the toolbar. The photos are hosted on a third party site
+ * that is not always reachable, so the image is only given space once it has actually
+ * been decoded; otherwise the toolbar collapses to the app bar and the content is not
+ * pushed down by an empty placeholder.
+ */
+@Composable
+private fun HostelHeaderImage(url: String, alpha: Float) {
+    val painter = rememberAsyncImagePainter(model = url)
+    val state by painter.state.collectAsState()
+
+    if (state is AsyncImagePainter.State.Success) {
+        Image(
+            painter = painter,
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .fillMaxWidth()
+                .aspectRatio(1.4f)
+                .alpha(alpha)
+        )
     }
 }

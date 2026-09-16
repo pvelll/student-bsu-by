@@ -174,10 +174,8 @@ private class UpdateRequestedHandler(
     override suspend fun launch() {
         isUpdatingMapper.map(false)
         update(DataSource.All)
-        connectivityManager.isNetworkConnected.collect {
-            if (it){
-                update(DataSource.Remote)
-            }
+        connectivityManager.onReconnected {
+            update(DataSource.Remote)
         }
     }
 
@@ -190,7 +188,9 @@ private class UpdateRequestedHandler(
     private suspend fun update(dataSource: DataSource){
         subjectsRepository.get(dataSource)
             .onEach {
-                subjectsMapper.map(DataState.Success(it))
+                subjectsMapper.map(
+                    if (it.isEmpty()) DataState.Empty else DataState.Success(it)
+                )
                 searchChangedHandler.handle(
                     SubjectsEvent.SubjectsSearchChanged(searchState.current))
             }
@@ -203,7 +203,7 @@ private class UpdateRequestedHandler(
                 if (subjectsMapper.current !is DataState.Success) {
                     subjectsMapper.map(
                         DataState.Error(
-                            Res.string.error_load_subjects, it
+                            it.toErrorMessage(Res.string.error_load_subjects), it
                         )
                     )
                 }

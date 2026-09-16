@@ -41,7 +41,8 @@ val platformModule = module {
         provideSecureSettings("github.alexzhirkevich.studentbsuby_cookies")
     }
 
-    factory<ConnectivityManager> {
+    // One instance per process (see the Android module).
+    single<ConnectivityManager> {
         InternetConnectivityManager(StateFlowCommunication(false))
     }
 
