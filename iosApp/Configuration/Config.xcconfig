@@ -1,3 +1,5 @@
-TEAM_ID=12345
+// Apple Developer Team ID (App Store Connect -> Membership). Used for automatic signing.
+TEAM_ID=HJURJV8U2P
+// Bundle identifier registered in the developer portal / App Store Connect.
 BUNDLE_ID=github.alexzhirkevich.studentbsuby
 APP_NAME=Кабинет студента БГУ
