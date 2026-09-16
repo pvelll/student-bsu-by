@@ -1,9 +1,6 @@
 package github.alexzhirkevich.studentbsuby.di
 
 import android.content.Context
-import android.content.SharedPreferences
-import androidx.security.crypto.EncryptedSharedPreferences
-import androidx.security.crypto.MasterKey
 import androidx.work.WorkManager
 import com.russhwolf.settings.ObservableSettings
 import com.russhwolf.settings.SharedPreferencesSettings
@@ -31,6 +28,7 @@ import github.alexzhirkevich.studentbsuby.util.PlatformActionsAndroid
 import github.alexzhirkevich.studentbsuby.util.WorkerManager
 import github.alexzhirkevich.studentbsuby.util.communication.StateFlowCommunication
 import github.alexzhirkevich.studentbsuby.util.migrateLegacyCookies
+import github.alexzhirkevich.studentbsuby.util.provideSecureSharedPreferences
 import github.alexzhirkevich.studentbsuby.workers.SyncWorkerManager
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.qualifier.named
@@ -47,7 +45,10 @@ val platformModule = module {
         provideCookiesSettings(androidContext())
     }
 
-    factory<ConnectivityManager> {
+    // One instance per process: every instance registers network callbacks that are
+    // never unregistered, and a shared one already holds the current connectivity
+    // when a screen starts observing it.
+    single<ConnectivityManager> {
         InternetConnectivityManager(androidContext(), StateFlowCommunication(false))
     }
 
@@ -78,45 +79,12 @@ val platformModule = module {
 }
 
 /**
- * Cookies preferences: the same encrypted file the original
- * AppModule.provideCookiesPreferencesSharedPreferences created (with the same
- * fallback to the default preferences on any crypto failure), with the legacy okhttp
- * cookie entries migrated to the JSON format BEFORE the preferences are wrapped
+ * Cookies preferences: the same encrypted file the original app used, with the legacy
+ * okhttp cookie entries migrated to the JSON format BEFORE the preferences are wrapped
  * into Settings — existing sessions survive the update.
  */
 private fun provideCookiesSettings(context: Context): ObservableSettings {
-    val preferences = kotlin.runCatching {
-        createEncryptedPrefs(context.packageName + "_cookies", context)
-    }.getOrElse {
-        defaultSharedPreferences(context)
-    }
+    val preferences = provideSecureSharedPreferences(context.packageName + "_cookies")
     migrateLegacyCookies(preferences)
     return SharedPreferencesSettings(preferences)
 }
-
-private fun createEncryptedPrefs(name: String, context: Context) =
-    EncryptedSharedPreferences.create(
-        context,
-        name,
-        MasterKey.Builder(context)
-            .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
-            .setUserAuthenticationRequired(false)
-            .build(),
-        EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-        EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-    )
-
-private fun defaultSharedPreferences(context: Context): SharedPreferences =
-    context.getSharedPreferences(
-        context.packageName + "_preferences",
-        Context.MODE_PRIVATE
-    ).also {
-        kotlin.runCatching {
-            if (it.contains("username") || it.contains("password")) {
-                it.edit()
-                    .remove("username")
-                    .remove("password")
-                    .apply()
-            }
-        }
-    }

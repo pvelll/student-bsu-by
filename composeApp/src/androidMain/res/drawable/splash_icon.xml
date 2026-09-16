@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Splash screen icon: the logo inset so it fits the circular icon mask of the
+     system splash screen (Android 12+) and the backport. -->
+<inset xmlns:android="http://schemas.android.com/apk/res/android"
+    android:drawable="@drawable/logo"
+    android:inset="22%" />

@@ -10,4 +10,5 @@
     <color name="blue">#00285E</color>
     <color name="primary_variant_dark">#252525</color>
     <color name="blue_transparent">#8800285E</color>
+    <color name="window_background">#FFF7F7F8</color>
 </resources>

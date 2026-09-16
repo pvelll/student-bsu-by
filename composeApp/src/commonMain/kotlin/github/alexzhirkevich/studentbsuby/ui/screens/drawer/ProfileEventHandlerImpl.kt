@@ -37,7 +37,7 @@ class ProfileEventHandlerImpl(
 ) : ProfileEventHandler, SuspendEventHandler<ProfileEvent> by SuspendEventHandler.from(
     LogoutEventHandler(dispatchers, loginRepository),
     RouteSelectedHandler(routeMapper, dispatchers),
-    SettingClickedHandler(),
+    SettingClickedHandler(dispatchers),
     UpdateRequestedHandler(
         connectivityManager = connectivityManager,
         userRepository = userRepository,
@@ -75,11 +75,19 @@ private class RouteSelectedHandler(
     }
 }
 
-private class SettingClickedHandler : BaseSuspendEventHandler<ProfileEvent.SettingsClicked>(
+private class SettingClickedHandler(
+    private val dispatchers: Dispatchers
+) : BaseSuspendEventHandler<ProfileEvent.SettingsClicked>(
     ProfileEvent.SettingsClicked::class
 ) {
     override suspend fun handle(event: ProfileEvent.SettingsClicked) {
-        event.navController.navigate(Route.SettingsScreen.route)
+        // Events are handled on a background dispatcher; NavController must be
+        // driven from the main thread, otherwise the navigation silently fails.
+        dispatchers.runOnUI {
+            event.navController.navigate(Route.SettingsScreen.route) {
+                launchSingleTop = true
+            }
+        }
     }
 }
 
@@ -116,26 +124,27 @@ private class UpdateRequestedHandler(
         update(DataSource.All)
         connectivityMapper.map(ConnectivityUi.Connected)
 
-        var values = 0L
+        // The first value is the current connectivity (hot state flow), the data has
+        // just been loaded above; only real changes re-check the session and reload.
+        var first = true
 
-        connectivityManager.isNetworkConnected.collect {
+        connectivityManager.isNetworkConnected.collect { connected ->
 
-            val logged = if (values < 2) true else
+            val logged = if (first) true else
                 runCatching {
-                loginRepository.initialize().loggedIn
-            }.getOrDefault(false)
-
-            values++
+                    loginRepository.initialize().loggedIn
+                }.getOrDefault(false)
 
             connectivityMapper.map(when{
-                !it -> ConnectivityUi.Connecting
+                !connected -> ConnectivityUi.Connecting
                 !logged -> ConnectivityUi.Offline
                 else -> ConnectivityUi.Connected
             })
 
-            if (it){
+            if (connected && !first){
                 update(DataSource.Remote)
             }
+            first = false
         }
     }
     override suspend fun handle(event: ProfileEvent.UpdateRequested) {

@@ -269,7 +269,7 @@ private class InfoAndBillsRepository(
     override suspend fun saveToCache(value: Pair<PaidServicesInfo, List<Bill>>) {
         kotlin.runCatching {
             dao.insertInfo(value.first)
-            dao.clearBills(value.second[0].owner, Bill.TYPE_PAIDINFO)
+            dao.clearBills(value.first.owner, Bill.TYPE_PAIDINFO)
             value.second.forEach { dao.insertBill(it) }
         }
     }

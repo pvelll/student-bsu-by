@@ -25,6 +25,8 @@ import platform.Security.SecItemAdd
 import platform.Security.SecItemCopyMatching
 import platform.Security.SecItemDelete
 import platform.Security.SecItemUpdate
+import platform.Security.kSecAttrAccessible
+import platform.Security.kSecAttrAccessibleAfterFirstUnlock
 import platform.Security.kSecAttrAccount
 import platform.Security.kSecAttrService
 import platform.Security.kSecClass
@@ -257,14 +259,19 @@ class KeychainSettings(private val service: String) : ObservableSettings {
                     )
                     try {
                         CFDictionaryAddValue(attributes, kSecValueData, cfData)
-                        SecItemUpdate(query, attributes)
+                        CFDictionaryAddValue(attributes, kSecAttrAccessible, kSecAttrAccessibleAfterFirstUnlock)
+                        SecItemUpdate(query, attributes).reportFailure("update", key)
                     } finally {
                         CFRelease(attributes)
                     }
                 }
             } else {
-                keychainOp(key, kSecValueData to cfData) { query ->
-                    SecItemAdd(query, null)
+                keychainOp(
+                    key,
+                    kSecValueData to cfData,
+                    kSecAttrAccessible to kSecAttrAccessibleAfterFirstUnlock
+                ) { query ->
+                    SecItemAdd(query, null).reportFailure("add", key)
                 }
             }
         } finally {
@@ -300,5 +307,11 @@ class KeychainSettings(private val service: String) : ObservableSettings {
             cfKey?.let { CFBridgingRelease(it) }
             CFBridgingRelease(cfService)
         }
+    }
+}
+
+private fun Int.reportFailure(operation: String, key: String) {
+    if (this != 0) {
+        println("W/KeychainSettings: failed to $operation item '$key': OSStatus $this")
     }
 }

@@ -22,6 +22,8 @@ private const val VER_DESC = "desc"
 
 private const val UPDATE_PROP_DELAY =  3 * 24 * 60 * 60 * 1000L
 
+private const val DEFAULT_TELEGRAM = "https://t.me/sushkpawel"
+
 private val json = Json { isLenient = true }
 
 data class ApplicationVersion(
@@ -64,9 +66,13 @@ class RemoteConfigRepository(
     suspend fun getMinimumStableVersionIfNeeded() : ApplicationVersion? =
         getVersion(STABLE_VER)?.takeIf { platformInfo.versionCode < it.code }
 
-    fun telegram() : String = kotlin.runCatching{
-       return  remoteConfigClient.getString(TELEGRAM)
-    }.getOrNull().orEmpty()
+    /**
+     * Developer's Telegram. Remote config may override it; without a configured Firebase
+     * project (no google-services.json) the remote value is empty and the default is used.
+     */
+    fun telegram() : String = kotlin.runCatching {
+        remoteConfigClient.getString(TELEGRAM)
+    }.getOrNull()?.takeIf(String::isNotBlank) ?: DEFAULT_TELEGRAM
 
     fun mail() : String = kotlin.runCatching {
         remoteConfigClient.getString(MAIL)

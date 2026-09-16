@@ -6,6 +6,7 @@ import github.alexzhirkevich.studentbsuby.data.models.News
 import github.alexzhirkevich.studentbsuby.repo.DataSource
 import github.alexzhirkevich.studentbsuby.repo.NewsRepository
 import github.alexzhirkevich.studentbsuby.util.ConnectivityManager
+import github.alexzhirkevich.studentbsuby.util.onReconnected
 import github.alexzhirkevich.studentbsuby.util.DataState
 import github.alexzhirkevich.studentbsuby.util.BaseSuspendEventHandler
 import github.alexzhirkevich.studentbsuby.util.SuspendEventHandler
@@ -42,10 +43,8 @@ private class UpdateRequestedHandler(
         isUpdatingMapper.map(false)
         newsMapper.map(DataState.Loading)
         update(DataSource.All)
-        connectivityManager.isNetworkConnected.collect {
-            if (it){
-                update(DataSource.Remote)
-            }
+        connectivityManager.onReconnected {
+            update(DataSource.Remote)
         }
     }
 

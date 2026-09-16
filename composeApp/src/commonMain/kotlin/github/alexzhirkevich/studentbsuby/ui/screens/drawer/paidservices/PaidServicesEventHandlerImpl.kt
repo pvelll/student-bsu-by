@@ -71,10 +71,8 @@ private class UpdateRequestedHandler(
         commonReceiptsMapper.map(DataState.Loading)
         paidInfoMapper.map(DataState.Loading)
         update(DataSource.All)
-        connectivityManager.isNetworkConnected.collect {
-            if (it){
-                update(DataSource.Remote)
-            }
+        connectivityManager.onReconnected {
+            update(DataSource.Remote)
         }
     }
 

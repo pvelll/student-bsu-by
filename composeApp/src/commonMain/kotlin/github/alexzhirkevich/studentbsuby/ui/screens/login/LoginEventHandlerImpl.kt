@@ -128,7 +128,7 @@ private class InitLoginHandler(
     }
 
     override suspend fun handle(event: LoginEvent.InitLogin) {
-        if (loginRepository.autoLogin) {
+        if (loginRepository.autoLogin && loginRepository.username.isNotBlank()) {
 //            while (true) {
                 try {
                     if (!loginRepository.autoLogin)
@@ -233,8 +233,9 @@ private class LoginClickedHandler(
         loginMapper.map(loginRepository.username)
         passwordMapper.map(loginRepository.password)
         autoLoginMapper.map(loginRepository.autoLogin)
-
-        updateHandler.handle(LoginEvent.UpdateClicked(false))
+        // The captcha is requested by the login screen when it is shown: this view model
+        // is also created by the main screen for the session restore, and downloading
+        // and recognizing captchas there on every start is wasted work.
     }
 
     override suspend fun handle(event: LoginEvent.LoginClicked) {

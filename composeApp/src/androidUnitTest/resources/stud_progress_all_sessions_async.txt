@@ -1,0 +1,394 @@
+1|#||4|23583|updatePanel|ctl00_ctl00_ContentPlaceHolder0_ContentPlaceHolder1_ctlStudProgress1_UpdatePanel1| 
+<table border="0" width="100%">
+<tr><td width="100%" valign="top">
+           <span id="ctl00_ctl00_ContentPlaceHolder0_ContentPlaceHolder1_ctlStudProgress1_lbStudFacultet" style="display:inline-block;width:100%;">Учреждение образования «Международный государственный экологический институт имени А.Д.Сахарова» Белорусского государственного университета</span>
+           <span id="ctl00_ctl00_ContentPlaceHolder0_ContentPlaceHolder1_ctlStudProgress1_lbStudKurs" style="display:inline-block;width:100%;">1 курс, группа Т00, форма обучения дневная, специальность: информационные системы и технологии ФМОС</span>
+           <span id="ctl00_ctl00_ContentPlaceHolder0_ContentPlaceHolder1_ctlStudProgress1_lbStudBall" style="display:inline-block;width:100%;"></span>
+</td></tr>
+<tr><td width="100%" valign="top">
+<!--
+Выберите сессию: -->
+    
+    <br />
+    <a id="ctl00_ctl00_ContentPlaceHolder0_ContentPlaceHolder1_ctlStudProgress1_selSemester" href="javascript:__doPostBack(&#39;ctl00$ctl00$ContentPlaceHolder0$ContentPlaceHolder1$ctlStudProgress1$selSemester&#39;,&#39;&#39;)" style="font-size:Larger;font-weight:bold;">Все сессии</a>
+    <table id="ctl00_ctl00_ContentPlaceHolder0_ContentPlaceHolder1_ctlStudProgress1_tblSemester" border="0" cellpadding="2" cellspacing="7">
+	<tr>
+		<th class="styleSessionSel">1 курс</th>
+	</tr>
+	<tr>
+		<td><a id="ctl00_ctl00_ContentPlaceHolder0_ContentPlaceHolder1_ctlStudProgress1_selSemester1" href="javascript:__doPostBack(&#39;ctl00$ctl00$ContentPlaceHolder0$ContentPlaceHolder1$ctlStudProgress1$selSemester1&#39;,&#39;&#39;)" style="font-size:Larger;">зимняя сессия</a></td>
+	</tr>
+	<tr>
+		<td><a id="ctl00_ctl00_ContentPlaceHolder0_ContentPlaceHolder1_ctlStudProgress1_selSemester2" href="javascript:__doPostBack(&#39;ctl00$ctl00$ContentPlaceHolder0$ContentPlaceHolder1$ctlStudProgress1$selSemester2&#39;,&#39;&#39;)" style="font-size:Larger;">весенняя сессия</a></td>
+	</tr>
+</table>
+
+</td></tr>
+<tr><td width="100%" valign="top">
+
+</td></tr>
+<tr><td width="100%" valign="top">
+<table id="ctl00_ctl00_ContentPlaceHolder0_ContentPlaceHolder1_ctlStudProgress1_tblProgress" cols="10" border="1" cellspacing="0" style="border-width:1px; border-color:Black; ">
+	<tr>
+		<td colspan="10" align="center"><b>1 курс, зимняя сессия</b></td>
+	</tr>
+	<tr>
+		<td align="center" class="styleNumberBody" title="" rowspan="2"><b>№ п/п</b></td>
+		<td align="left" class="styleLessonBody" title="" rowspan="2"><b>Предмет</b></td>
+		<td align="center" class="styleHoursBody" title="" colspan="6"><b>Часы</b></td>
+		<td align="center" class="styleZachBody" title="" rowspan="2"><b>Зачет</b></td>
+		<td align="center" class="styleExamBody" title="" rowspan="2"><b>Экзамен</b></td>
+	</tr>
+	<tr>
+		<td align="center" class="styleHoursSmallBody" title="лекции">лекц</td>
+		<td align="center" class="styleHoursSmallBody" title="практические занятий">практ</td>
+		<td align="center" class="styleHoursSmallBody" title="лабораторные">лаб</td>
+		<td align="center" class="styleHoursSmallBody" title="семинары">сем</td>
+		<td align="center" class="styleHoursSmallBody" title="факультативы">факул</td>
+		<td align="center" class="styleHoursSmallBody" title="контролируемая самостоятельная работа">КСР</td>
+	</tr>
+	<tr>
+		<td align="center" class="styleNumberBody" title="">1</td>
+		<td align="left" class="styleLessonBody" title="">Основы алгоритмизации и программирования</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleZachBody" title=""><i>зачет</i></td>
+		<td align="center" class="styleExamBody" title=""><i>экзамен</i></td>
+	</tr>
+	<tr>
+		<td align="center" class="styleNumberBody" title="">2</td>
+		<td align="left" class="styleLessonBody" title="">Физика</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleZachBody" title=""><i>зачет</i></td>
+		<td align="center" class="styleExamBody" title=""><i>экзамен</i></td>
+	</tr>
+	<tr>
+		<td align="center" class="styleNumberBody" title="">3</td>
+		<td align="left" class="styleLessonBody" title="">Биология</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleZachBody" title=""><i>зачет</i></td>
+		<td align="center" class="styleExamBody" title="">&nbsp;</td>
+	</tr>
+	<tr>
+		<td align="center" class="styleNumberBody" title="">4</td>
+		<td align="left" class="styleLessonBody" title="">Белорусский язык (профессиональная лексика)</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleZachBody" title=""><i>зачет</i></td>
+		<td align="center" class="styleExamBody" title="">&nbsp;</td>
+	</tr>
+	<tr>
+		<td align="center" class="styleNumberBody" title="">5</td>
+		<td align="left" class="styleLessonBody" title="">Иностранный язык</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleZachBody" title=""><i>зачет</i></td>
+		<td align="center" class="styleExamBody" title="">&nbsp;</td>
+	</tr>
+	<tr>
+		<td align="center" class="styleNumberBody" title="">6</td>
+		<td align="left" class="styleLessonBody" title="">Коррупция и её общественная опасность</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleZachBody" title=""><i>зачет</i></td>
+		<td align="center" class="styleExamBody" title="">&nbsp;</td>
+	</tr>
+	<tr>
+		<td align="center" class="styleNumberBody" title="">7</td>
+		<td align="left" class="styleLessonBody" title="">Математический анализ</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleZachBody" title=""><i>зачет</i></td>
+		<td align="center" class="styleExamBody" title="">&nbsp;</td>
+	</tr>
+	<tr>
+		<td align="center" class="styleNumberBody" title="">8</td>
+		<td align="left" class="styleLessonBody" title="">Русский язык</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleZachBody" title=""><i>зачет</i></td>
+		<td align="center" class="styleExamBody" title="">&nbsp;</td>
+	</tr>
+	<tr>
+		<td align="center" class="styleNumberBody" title="">9</td>
+		<td align="left" class="styleLessonBody" title="">Физическая культура</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleZachBody" title=""><i>зачет</i></td>
+		<td align="center" class="styleExamBody" title="">&nbsp;</td>
+	</tr>
+	<tr>
+		<td align="center" class="styleNumberBody" title="">10</td>
+		<td align="left" class="styleLessonBody" title="">История белорусской государственности</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleZachBody" title="">&nbsp;</td>
+		<td align="center" class="styleExamBody" title=""><i>экзамен</i></td>
+	</tr>
+	<tr>
+		<td align="center" class="styleNumberBody" title="">11</td>
+		<td align="left" class="styleLessonBody" title="">Линейная алгебра и аналитическая геометрия</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleZachBody" title="">&nbsp;</td>
+		<td align="center" class="styleExamBody" title=""><i>экзамен</i></td>
+	</tr>
+	<tr>
+		<td align="center" class="styleNumberBody" title="">12</td>
+		<td align="left" class="styleLessonBody" title="">Общая и неорганическая химия</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleZachBody" title="">&nbsp;</td>
+		<td align="center" class="styleExamBody" title=""><i>экзамен</i></td>
+	</tr>
+	<tr>
+		<td align="center" class="styleNumberBody" title="">13</td>
+		<td align="left" class="styleLessonBody" title="">Современная политэкономия</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleZachBody" title="">&nbsp;</td>
+		<td align="center" class="styleExamBody" title=""><i>экзамен</i></td>
+	</tr>
+	<tr>
+		<td colspan="10" align="center"><b>1 курс, весенняя сессия</b></td>
+	</tr>
+	<tr>
+		<td align="center" class="styleNumberBody" title="" rowspan="2"><b>№ п/п</b></td>
+		<td align="left" class="styleLessonBody" title="" rowspan="2"><b>Предмет</b></td>
+		<td align="center" class="styleHoursBody" title="" colspan="6"><b>Часы</b></td>
+		<td align="center" class="styleZachBody" title="" rowspan="2"><b>Зачет</b></td>
+		<td align="center" class="styleExamBody" title="" rowspan="2"><b>Экзамен</b></td>
+	</tr>
+	<tr>
+		<td align="center" class="styleHoursSmallBody" title="лекции">лекц</td>
+		<td align="center" class="styleHoursSmallBody" title="практические занятий">практ</td>
+		<td align="center" class="styleHoursSmallBody" title="лабораторные">лаб</td>
+		<td align="center" class="styleHoursSmallBody" title="семинары">сем</td>
+		<td align="center" class="styleHoursSmallBody" title="факультативы">факул</td>
+		<td align="center" class="styleHoursSmallBody" title="контролируемая самостоятельная работа">КСР</td>
+	</tr>
+	<tr>
+		<td align="center" class="styleNumberBody" title="">1</td>
+		<td align="left" class="styleLessonBody" title="">Основы алгоритмизации и программирования</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleZachBody" title=""><i>зачет</i></td>
+		<td align="center" class="styleExamBody" title=""><i>экзамен</i></td>
+	</tr>
+	<tr>
+		<td align="center" class="styleNumberBody" title="">2</td>
+		<td align="left" class="styleLessonBody" title="">Физика</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleZachBody" title=""><i>зачет</i></td>
+		<td align="center" class="styleExamBody" title=""><i>экзамен</i></td>
+	</tr>
+	<tr>
+		<td align="center" class="styleNumberBody" title="">3</td>
+		<td align="left" class="styleLessonBody" title="">Курсовая работа "Основы алгоритмизации и программирования"</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleZachBody" title=""><i>зачет</i></td>
+		<td align="center" class="styleExamBody" title="">&nbsp;</td>
+	</tr>
+	<tr>
+		<td align="center" class="styleNumberBody" title="">4</td>
+		<td align="left" class="styleLessonBody" title="">Практика ознакомительная</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleZachBody" title=""><i>зачет</i></td>
+		<td align="center" class="styleExamBody" title="">&nbsp;</td>
+	</tr>
+	<tr>
+		<td align="center" class="styleNumberBody" title="">5</td>
+		<td align="left" class="styleLessonBody" title="">Иностранный язык</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleZachBody" title=""><i>зачет</i></td>
+		<td align="center" class="styleExamBody" title=""><i>экзамен</i></td>
+	</tr>
+	<tr>
+		<td align="center" class="styleNumberBody" title="">6</td>
+		<td align="left" class="styleLessonBody" title="">Объектно-ориентированное проектирование и программирование</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleZachBody" title=""><i>зачет</i></td>
+		<td align="center" class="styleExamBody" title="">&nbsp;</td>
+	</tr>
+	<tr>
+		<td align="center" class="styleNumberBody" title="">7</td>
+		<td align="left" class="styleLessonBody" title="">Органическая химия</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleZachBody" title=""><i>зачет</i></td>
+		<td align="center" class="styleExamBody" title="">&nbsp;</td>
+	</tr>
+	<tr>
+		<td align="center" class="styleNumberBody" title="">8</td>
+		<td align="left" class="styleLessonBody" title="">Русский язык</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleZachBody" title=""><i>зачет</i></td>
+		<td align="center" class="styleExamBody" title="">&nbsp;</td>
+	</tr>
+	<tr>
+		<td align="center" class="styleNumberBody" title="">9</td>
+		<td align="left" class="styleLessonBody" title="">Физическая культура</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleZachBody" title=""><i>зачет</i></td>
+		<td align="center" class="styleExamBody" title="">&nbsp;</td>
+	</tr>
+	<tr>
+		<td align="center" class="styleNumberBody" title="">10</td>
+		<td align="left" class="styleLessonBody" title="">Аналитическая геометрия и линейная алгебра</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleZachBody" title="">&nbsp;</td>
+		<td align="center" class="styleExamBody" title=""><i>экзамен</i></td>
+	</tr>
+	<tr>
+		<td align="center" class="styleNumberBody" title="">11</td>
+		<td align="left" class="styleLessonBody" title="">Введение в разработку программного обьеспечения</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleZachBody" title="">&nbsp;</td>
+		<td align="center" class="styleExamBody" title=""><i>экзамен</i></td>
+	</tr>
+	<tr>
+		<td align="center" class="styleNumberBody" title="">12</td>
+		<td align="left" class="styleLessonBody" title="">Дискретная математика</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleZachBody" title="">&nbsp;</td>
+		<td align="center" class="styleExamBody" title=""><i>экзамен</i></td>
+	</tr>
+	<tr>
+		<td align="center" class="styleNumberBody" title="">13</td>
+		<td align="left" class="styleLessonBody" title="">Математический анализ</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleHoursSmallBody" title="">&nbsp;</td>
+		<td align="center" class="styleZachBody" title="">&nbsp;</td>
+		<td align="center" class="styleExamBody" title=""><i>экзамен</i></td>
+	</tr>
+</table>
+
+</td></tr>
+<tr><td width="100%" valign="top">
+<br>
+Примечания:
+<br />
+<font color="red">Красным</font> цветом показаны неудовлетворительные оценки
+<br />
+Количество пересдач показано символом <b><font color="#CC00CC">'</font></b>
+<br />
+<!-- * - зачет/экзамен ещё не сдавался -->
+</td></tr>
+</table>
+       |0|hiddenField|__EVENTTARGET||0|hiddenField|__EVENTARGUMENT||1628|hiddenField|__VIEWSTATE|TEST_STATE_VALUE|8|hiddenField|__VIEWSTATEGENERATOR|TEST_STATE_VALUE|180|hiddenField|__EVENTVALIDATION|TEST_STATE_VALUE|0|asyncPostBackControlIDs|||0|postBackControlIDs|||83|updatePanelIDs||tctl00$ctl00$ContentPlaceHolder0$ContentPlaceHolder1$ctlStudProgress1$UpdatePanel1,|0|childUpdatePanelIDs|||82|panelsToRefreshIDs||ctl00$ctl00$ContentPlaceHolder0$ContentPlaceHolder1$ctlStudProgress1$UpdatePanel1,|2|asyncPostBackTimeout||90|14|formAction||./StudProgress|
