@@ -2,4 +2,8 @@
 TEAM_ID=HJURJV8U2P
 // Bundle identifier registered in the developer portal / App Store Connect.
 BUNDLE_ID=github.alexzhirkevich.studentbsuby
+// Full application name (App Store, system dialogs that show CFBundleName).
 APP_NAME=Кабинет студента БГУ
+// Short label under the icon on the home screen: iOS shows a single line about the
+// width of the icon and squeezes/truncates anything longer than ~12 characters.
+APP_DISPLAY_NAME=Студент БГУ

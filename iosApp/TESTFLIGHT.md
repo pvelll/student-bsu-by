@@ -5,7 +5,8 @@
 ## Один раз
 
 1. В `Configuration/Config.xcconfig` проверить `TEAM_ID` (App Store Connect → Membership)
-   и `BUNDLE_ID`. Bundle ID должен быть зарегистрирован в developer.apple.com → Identifiers
+   и `BUNDLE_ID`. Там же задаются полное имя `APP_NAME` и короткая подпись под иконкой
+   `APP_DISPLAY_NAME` (длинная подпись на домашнем экране iOS сжимается и обрезается). Bundle ID должен быть зарегистрирован в developer.apple.com → Identifiers
    (Xcode с Automatic signing сделает это сам при первой сборке на устройство).
 2. В App Store Connect → My Apps → «+» создать приложение с этим Bundle ID
    (название «Кабинет студента БГУ», язык — русский, SKU любой).
