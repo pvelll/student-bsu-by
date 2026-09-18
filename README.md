@@ -1,7 +1,7 @@
 # student-bsu-by
 
 Multiplatform client for [BSU student's personal account](https://student.bsu.by).<br>
-Published in [Google Play](https://play.google.com/store/apps/details?id=github.alexzhirkevich.studentbsuby).
+Original application is published in [Google Play](https://play.google.com/store/apps/details?id=github.alexzhirkevich.studentbsuby).
 
 ## Screenshots
 
@@ -28,5 +28,6 @@ Works both on ios and android.
 
 ## Authors
 
-* **Alexander Zhirkevich** - [Telegram](https://t.me/alexzhirkevich)
-* **Pavel Sushko** - [Telegram](https://t.me/sushkpavel)
+* **Pavel Sushko** - [Telegram](https://t.me/sushkpavel) - multiplatform rework, current fork owner
+* **Alexander Zhirkevich** - [Telegram](https://t.me/alexzhirkevich) - original idea
+
