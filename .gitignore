@@ -1,24 +1,89 @@
-.kotlin
-*.iml
-.gradle
-/local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
-.DS_Store
-.claude
-/build
-/captures
-.externalNativeBuild
-.cxx
-local.properties
-release.keystore
-private_key.pepk
-keystore.properties
+# The repository is public: anything that identifies the developer account, signs
+# releases or grants access to the stores must stay on the developer's machine.
+
+# --- Secrets and signing ------------------------------------------------------
+# Android upload key and its passwords (see RELEASE.md)
 *.jks
 *.keystore
+keystore.properties
+*.pepk
+# SDK paths and other machine-local overrides
+local.properties
+secrets.properties
+.env
+.env.*
+!.env.example
+# Firebase configs are tied to the developer's Firebase project
 google-services.json
 GoogleService-Info.plist
+# Google Play Developer API service account (fastlane / Gradle Play Publisher)
+*service-account*.json
+play-store-credentials.json
+# Apple: App Store Connect API keys (AuthKey_*.p8), certificates, provisioning profiles
+*.p8
+*.p12
+*.pem
+*.cer
+*.certSigningRequest
+*.mobileprovision
+*.provisionprofile
+
+# --- Release artifacts: uploaded to the stores, not committed ----------------
+*.apk
+*.aab
+*.apks
+*.idsig
+*.ipa
+*.xcarchive
+*.dSYM
+*.dSYM.zip
+# "Generate Signed Bundle / APK" output (<module>/release/) and R8 mappings
+/*/release/
+mapping.txt
+
+# --- Gradle / Kotlin ---------------------------------------------------------
+.gradle/
+.kotlin/
+**/build/
+!**/src/**/build/
+captures/
+.externalNativeBuild/
+.cxx/
+# JVM crash logs and heap dumps may contain env variables and in-memory credentials
+*.log
+*.hprof
+
+# --- IDE ---------------------------------------------------------------------
+*.iml
+# Only shared settings are kept; the rest of .idea is per developer
+# (devices, emulators, Firebase/AWS accounts, window layout).
+.idea/*
+!.idea/codeStyles/
+!.idea/inspectionProfiles/
+!.idea/runConfigurations/
+.fleet/
+.vscode/
+.navigation/
+
+# --- Xcode -------------------------------------------------------------------
+# Per-user state; shared schemes live in xcshareddata/
+xcuserdata/
+DerivedData/
+*.xcscmblueprint
+*.xccheckout
+*.moved-aside
+.swiftpm/
+.build/
+Pods/
+
+# --- fastlane ----------------------------------------------------------------
+**/fastlane/report.xml
+**/fastlane/Preview.html
+**/fastlane/README.md
+**/fastlane/screenshots/
+**/fastlane/test_output/
+
+# --- OS / tools --------------------------------------------------------------
+.DS_Store
+.claude/
+CLAUDE.local.md
