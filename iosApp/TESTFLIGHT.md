@@ -4,7 +4,7 @@
 
 ## Один раз
 
-1. В `Configuration/Config.xcconfig` проверить `TEAM_ID` (App Store Connect → Membership)
+1. В `Configuration/Config.xcconfig` проверить `TEAM_ID` (developer.apple.com/account → Membership details → Team ID)
    и `BUNDLE_ID`. Там же задаются полное имя `APP_NAME` и короткая подпись под иконкой
    `APP_DISPLAY_NAME` (длинная подпись на домашнем экране iOS сжимается и обрезается). Bundle ID должен быть зарегистрирован в developer.apple.com → Identifiers
    (Xcode с Automatic signing сделает это сам при первой сборке на устройство).

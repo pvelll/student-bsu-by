@@ -1,7 +1,10 @@
-// Apple Developer Team ID (App Store Connect -> Membership). Used for automatic signing.
-TEAM_ID=HJURJV8U2P
+// Apple Developer Team ID (developer.apple.com/account -> Membership details -> Team ID). Used for automatic signing.
+TEAM_ID=847G8T4DZC
 // Bundle identifier registered in the developer portal / App Store Connect.
 BUNDLE_ID=github.sushkpavel.studentbsuby
+// Debug builds get their own App ID: it can be signed by any team (including a free
+// Personal Team) without taking the release identifier, and installs next to the store app.
+BUNDLE_ID_SUFFIX[config=Debug]=.dev
 // Apple ID of the app (App Store Connect -> App Information -> Apple ID, digits only).
 // Known as soon as the app record is created; used for "update" links to the App Store.
 APP_STORE_ID=
