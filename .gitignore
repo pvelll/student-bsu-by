@@ -17,3 +17,8 @@
 local.properties
 release.keystore
 private_key.pepk
+keystore.properties
+*.jks
+*.keystore
+google-services.json
+GoogleService-Info.plist

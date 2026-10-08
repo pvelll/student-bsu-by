@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -94,16 +95,37 @@ kotlin {
     }
 }
 
+// Upload key for Google Play. keystore.properties (not in git) lives in the project root:
+//   storeFile=release.keystore
+//   storePassword=...
+//   keyAlias=upload
+//   keyPassword=...
+val keystoreProperties = Properties().apply {
+    val file = rootProject.file("keystore.properties")
+    if (file.exists()) file.inputStream().use(::load)
+}
+
 android {
-    namespace = "github.alexzhirkevich.studentbsuby"
+    namespace = "github.sushkpavel.studentbsuby"
     compileSdk = 37
 
     defaultConfig {
-        applicationId = "github.alexzhirkevich.studentbsuby"
+        applicationId = "github.sushkpavel.studentbsuby"
         minSdk = 24
         targetSdk = 36
-        versionCode = 25
-        versionName = "2.0.0"
+        versionCode = 1
+        versionName = "1.0"
+    }
+
+    signingConfigs {
+        if (!keystoreProperties.isEmpty) {
+            create("release") {
+                storeFile = rootProject.file(keystoreProperties.getProperty("storeFile"))
+                storePassword = keystoreProperties.getProperty("storePassword")
+                keyAlias = keystoreProperties.getProperty("keyAlias")
+                keyPassword = keystoreProperties.getProperty("keyPassword")
+            }
+        }
     }
 
     compileOptions {
@@ -119,7 +141,10 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
             )
-            signingConfig = signingConfigs.getByName("debug")
+            // Without keystore.properties the release build is signed with the debug key:
+            // it installs locally, but Google Play rejects it.
+            signingConfig = signingConfigs.findByName("release")
+                ?: signingConfigs.getByName("debug")
         }
     }
 
@@ -131,7 +156,7 @@ android {
 }
 
 compose.resources {
-    packageOfResClass = "github.alexzhirkevich.studentbsuby.resources"
+    packageOfResClass = "github.sushkpavel.studentbsuby.resources"
 }
 
 room {

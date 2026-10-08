@@ -9,14 +9,17 @@
    `APP_DISPLAY_NAME` (длинная подпись на домашнем экране iOS сжимается и обрезается). Bundle ID должен быть зарегистрирован в developer.apple.com → Identifiers
    (Xcode с Automatic signing сделает это сам при первой сборке на устройство).
 2. В App Store Connect → My Apps → «+» создать приложение с этим Bundle ID
-   (название «Кабинет студента БГУ», язык — русский, SKU любой).
+   (название — см. `../docs/store-listing.md`, язык — русский, SKU любой). Apple ID приложения
+   (App Information → General Information) вписать в `APP_STORE_ID` в `Configuration/Config.xcconfig`.
 3. В App Store Connect → App Information указать Privacy Policy URL (обязателен для
    внешнего тестирования) и контактный e-mail.
 
+Полная инструкция по релизу в App Store и Google Play — в `../RELEASE.md`.
+
 ## Каждая сборка
 
-1. Поднять номер сборки: `CURRENT_PROJECT_VERSION` в `iosApp.xcodeproj` (сейчас 25,
-   совпадает с Android `versionCode`); `MARKETING_VERSION` — версия для пользователей.
+1. Поднять номер сборки: `CURRENT_PROJECT_VERSION` в `iosApp.xcodeproj` (сейчас 1,
+   совпадает с Android `versionCode`); `MARKETING_VERSION` — версия для пользователей (сейчас 1.0).
 2. Xcode → схема `iosApp`, устройство «Any iOS Device (arm64)» → Product → Archive.
    Kotlin-фреймворк соберётся сам на этапе «Compile Kotlin Framework».
 3. Organizer → Distribute App → App Store Connect → Upload.
