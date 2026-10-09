@@ -178,6 +178,12 @@ private class InitLoginHandler(
     companion object {
         private suspend fun navigate(dispatchers: Dispatchers, navController: NavController) {
             dispatchers.runOnUI {
+                val shown = navController.currentBackStack.value.any {
+                    it.destination.route == Route.DrawerScreen.route
+                }
+                if (shown)
+                    return@runOnUI
+
                 navController.navigate(Route.DrawerScreen.route) {
                     launchSingleTop = true
                     popUpTo(Route.AuthScreen.route) {

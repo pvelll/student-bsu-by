@@ -1,6 +1,9 @@
 package github.sushkpavel.studentbsuby.api
 
 import com.fleeksoft.ksoup.Ksoup
+import github.sushkpavel.studentbsuby.util.exceptions.FailResponseException
+import github.sushkpavel.studentbsuby.util.exceptions.IncorrectResponseException
+import github.sushkpavel.studentbsuby.util.exceptions.SessionExpiredException
 import io.ktor.client.HttpClient
 import io.ktor.client.request.forms.submitForm
 import io.ktor.client.request.get
@@ -16,6 +19,9 @@ fun TimetableApi.dayOfWeek(day : Int) : FormUrlEncodedBody = mapOf(
     "$SCHEDULE_CONTROL\$ScriptManager1" to "$SCHEDULE_CONTROL\$UpdatePanel1|$SCHEDULE_CONTROL\$cmdDay${day+1}",
     AspNetForm.EVENT_TARGET to "$SCHEDULE_CONTROL\$cmdDay${day+1}",
 )
+
+fun TimetableApi.isScheduleResponse(response: String): Boolean =
+    response.contains("ctlSchedule1") && !response.contains("|pageRedirect|")
 
 interface TimetableApi {
 
@@ -63,12 +69,21 @@ class TimetableApiWrapper(private val api : TimetableApi) : TimetableApi{
     override suspend fun init(): HttpResponse {
         val resp = api.init()
 
-        if (resp.status.isSuccess()) {
-            val document = Ksoup.parse(resp.bodyAsText())
-            form = AspNetForm.parse(document)
-            val dayLinks = document.select("a[id*=cmdDay]")
-            hasSchedule = dayLinks.isEmpty() || dayLinks.any { it.hasAttr("href") }
-        }
+        if (!resp.status.isSuccess())
+            throw FailResponseException(resp.status.value)
+
+        val body = resp.bodyAsText()
+        if (body.isSessionExpired())
+            throw SessionExpiredException()
+
+        val document = Ksoup.parse(body)
+        val form = AspNetForm.parse(document)
+        if (!form.isValid)
+            throw IncorrectResponseException()
+
+        this.form = form
+        val dayLinks = document.select("a[id*=cmdDay]")
+        hasSchedule = dayLinks.isEmpty() || dayLinks.any { it.hasAttr("href") }
         return resp
     }
 

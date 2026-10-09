@@ -1,21 +1,28 @@
 package github.sushkpavel.studentbsuby.ui.screens.drawer.timetable
 
 import github.sushkpavel.studentbsuby.repo.DataSource
+import github.sushkpavel.studentbsuby.repo.LoginRepository
 import github.sushkpavel.studentbsuby.repo.TimetableRepository
 import github.sushkpavel.studentbsuby.resources.Res
 import github.sushkpavel.studentbsuby.resources.error_load_timetable
 import github.sushkpavel.studentbsuby.util.*
 import github.sushkpavel.studentbsuby.util.communication.Mapper
 import github.sushkpavel.studentbsuby.util.communication.StateMapper
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onEmpty
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 interface TimetableEventHandler : SuspendEventHandler<TimetableEvent>
 
 class TimetableEventHandlerImpl(
     timetableRepository: TimetableRepository,
+    loginRepository: LoginRepository,
     connectivityManager: ConnectivityManager,
     calendar: Calendar,
     timetableMapper: StateMapper<DataState<Timetable>>,
@@ -23,6 +30,7 @@ class TimetableEventHandlerImpl(
 ) : TimetableEventHandler, SuspendEventHandler<TimetableEvent> by SuspendEventHandler.from(
     UpdateRequestedHandler(
         timetableRepository = timetableRepository,
+        loginRepository = loginRepository,
         connectivityManager = connectivityManager,
         calendar = calendar,
         isUpdatingMapper = isUpdatingMapper,
@@ -32,6 +40,7 @@ class TimetableEventHandlerImpl(
 
 private class UpdateRequestedHandler(
     private val timetableRepository: TimetableRepository,
+    private val loginRepository: LoginRepository,
     private val connectivityManager: ConnectivityManager,
     private val calendar : Calendar,
     private val isUpdatingMapper: Mapper<Boolean>,
@@ -40,12 +49,24 @@ private class UpdateRequestedHandler(
     TimetableEvent.UpdateRequested::class
 ){
 
+    // The page state of the schedule api is shared, loads must not interleave.
+    private val mutex = Mutex()
 
     override suspend fun launch() {
         isUpdatingMapper.map(false)
+        val session = loginRepository.sessions.value
         update(DataSource.All)
-        connectivityManager.onReconnected {
-            update(DataSource.Remote)
+        coroutineScope {
+            launch {
+                connectivityManager.onReconnected {
+                    update(DataSource.Remote)
+                }
+            }
+            launch {
+                loginRepository.sessions
+                    .filter { it != session }
+                    .collect { update(DataSource.Remote) }
+            }
         }
     }
     override suspend fun handle(event: TimetableEvent.UpdateRequested) {
@@ -54,10 +75,7 @@ private class UpdateRequestedHandler(
         isUpdatingMapper.map(false)
     }
 
-    private suspend fun update(dataSource: DataSource){
-        if (dataSource == DataSource.Remote || dataSource == DataSource.All){
-            timetableRepository.init()
-        }
+    private suspend fun update(dataSource: DataSource) = mutex.withLock {
         timetableRepository.get(dataSource)
             .onEach {
                 val state = if (it.any { it.isNotEmpty() })

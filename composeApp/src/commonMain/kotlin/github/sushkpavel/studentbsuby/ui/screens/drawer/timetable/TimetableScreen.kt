@@ -62,7 +62,9 @@ fun TimetableScreen(
         toolbarState = rememberCollapsingToolbarState()
     )
 
-    val pagerState = rememberPagerState { 6 }
+    val pagerState = rememberPagerState(
+        initialPage = timetableViewModel.dayOfWeek.takeIf { it in 0..5 } ?: 0
+    ) { 6 }
 
     LaunchedEffect(Unit) {
         scaffoldState.toolbarState.collapse(0)

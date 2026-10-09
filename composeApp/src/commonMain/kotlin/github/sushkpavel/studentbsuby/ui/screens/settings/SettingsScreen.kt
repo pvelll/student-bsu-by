@@ -137,10 +137,8 @@ private fun Body(viewModel: SettingsViewModel) {
 
         val state by viewModel.state.collectAsState()
 
-        GroupName(name = stringResource(Res.string.other))
-        // Analytics and crash reports exist only on Android (Firebase); on iOS the
-        // switches would do nothing and contradict the App Store privacy declaration.
         if (platformInfo.platformName == "android") {
+            GroupName(name = stringResource(Res.string.other))
             TogglePreference(
                 title = Res.string.setting_collect_statistics,
                 helper = AnnotatedString(stringResource(Res.string.setting_collect_statistics_helper)),

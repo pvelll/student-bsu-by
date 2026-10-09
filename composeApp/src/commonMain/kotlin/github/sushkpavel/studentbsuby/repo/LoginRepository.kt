@@ -7,13 +7,16 @@ import com.russhwolf.settings.ObservableSettings
 import github.sushkpavel.studentbsuby.api.LoginApi
 import github.sushkpavel.studentbsuby.api.LoginApiWrapper
 import github.sushkpavel.studentbsuby.api.createLoginData
-import github.sushkpavel.studentbsuby.api.isSessionExpired
 import github.sushkpavel.studentbsuby.util.CaptchaRecognizer
 import github.sushkpavel.studentbsuby.util.LoginCookieManager
 import github.sushkpavel.studentbsuby.util.sharedPreferences
 import io.ktor.client.call.body
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.isSuccess
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlin.reflect.KProperty
 
 interface UsernameProvider {
@@ -49,6 +52,10 @@ class LoginRepository(
         private set
 
     var autoLogin by sharedPreferences(credentialsPreferences,false)
+
+    private val _sessions = MutableStateFlow(0)
+
+    val sessions: StateFlow<Int> = _sessions.asStateFlow()
 
     suspend fun initialize(): LoginResponse {
         try {
@@ -115,6 +122,7 @@ class LoginRepository(
             val loginResult = if (logged){
                 this.username = login
                 this.password = password
+                _sessions.update { it + 1 }
                 null
             } else {
                 (jsoup?.getElementById("ctl00_ContentPlaceHolder0_lbLoginResult")?.text()

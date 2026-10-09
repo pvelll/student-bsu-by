@@ -3,8 +3,10 @@ package github.sushkpavel.studentbsuby.repo
 import com.fleeksoft.ksoup.Ksoup
 import github.sushkpavel.studentbsuby.api.TimetableApi
 import github.sushkpavel.studentbsuby.api.dayOfWeek
+import github.sushkpavel.studentbsuby.api.isScheduleResponse
 import github.sushkpavel.studentbsuby.dao.LessonsDao
 import github.sushkpavel.studentbsuby.data.models.Lesson
+import github.sushkpavel.studentbsuby.util.exceptions.IncorrectResponseException
 import github.sushkpavel.studentbsuby.util.exceptions.UsernameNotFoundException
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -17,25 +19,23 @@ class TimetableRepository(
     private val lessonsDao : LessonsDao
 ) : CacheWebRepository<List<List<Lesson>>>() {
 
-    suspend fun init(){
-        timetableApi.init()
-    }
-
     override suspend fun getFromWeb(): List<List<Lesson>> {
 
         val username = usernameProvider.username.takeIf(String::isNotBlank)
             ?: throw UsernameNotFoundException()
 
-        // The schedule page marks the weekday buttons disabled when no schedule is
-        // published for the student; posting them back only produces an error page.
+        timetableApi.init()
+
         if (!timetableApi.hasSchedule)
             return List(6) { emptyList() }
 
         return coroutineScope {
-            (0..6).map { day ->
+            (0..5).map { day ->
                 async {
 
                     val string = timetableApi.timetable(timetableApi.dayOfWeek(day)).html()
+                    if (!timetableApi.isScheduleResponse(string))
+                        throw IncorrectResponseException()
                     val html =
                         '<' + string.substringAfter('<').substringBeforeLast('>') + '>'
                     val jsoup = Ksoup.parse(html)
@@ -102,13 +102,7 @@ class TimetableRepository(
                         }
                     }.getOrNull() ?: emptyList()
                 }
-            }.awaitAll().take(6).let {
-                if (it.size == 6) it else it.toMutableList().apply {
-                    repeat(6 - it.size) {
-                        add(emptyList())
-                    }
-                }
-            }
+            }.awaitAll()
         }
     }
 
@@ -134,7 +128,9 @@ class TimetableRepository(
         return kotlin.runCatching {
             usernameProvider.username.takeIf(String::isNotBlank)?.let { username ->
                 lessonsDao.getAll(username)
-            }?.groupBy { it.dayOfWeek }?.values?.toList()
+            }?.takeIf { it.isNotEmpty() }?.groupBy { it.dayOfWeek }?.let { byDay ->
+                List(6) { day -> byDay[day].orEmpty() }
+            }
         }.getOrNull() ?: emptyList()
     }
 

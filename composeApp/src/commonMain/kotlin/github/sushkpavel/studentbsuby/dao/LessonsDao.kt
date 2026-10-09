@@ -11,7 +11,7 @@ interface LessonsDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(value: Lesson)
 
-    @Query("SELECT * FROM Lesson WHERE owner = :username ORDER BY day_of_week AND number")
+    @Query("SELECT * FROM Lesson WHERE owner = :username ORDER BY day_of_week, number")
     suspend fun getAll(username : String) : List<Lesson>
 
     @Query("DELETE FROM Lesson WHERE owner = :username")

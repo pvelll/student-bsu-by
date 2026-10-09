@@ -36,7 +36,6 @@ class SyncUseCase(
 
     suspend fun performSync(): SyncResult {
         return if (login()) {
-            timetableRepository.init()
             update().also {
                 if (!loginRepository.autoLogin)
                     loginRepository.logout()
