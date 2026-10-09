@@ -14,13 +14,8 @@ import org.koin.core.module.dsl.viewModel
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
-/**
- * Mirrors the original LoginModule (ViewModelComponent).
- */
 val loginModule = module {
 
-    // Was @Singleton on the class itself; the LoginApi it receives is the stateful
-    // LoginApiWrapper singleton (VIEWSTATE state).
     single {
         LoginRepository(
             api = get(),

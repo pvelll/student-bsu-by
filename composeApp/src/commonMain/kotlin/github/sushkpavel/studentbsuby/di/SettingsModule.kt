@@ -8,13 +8,8 @@ import github.sushkpavel.studentbsuby.util.communication.StateFlowCommunication
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
-/**
- * Mirrors the original SettingsModule (ViewModelComponent).
- */
 val settingsModule = module {
 
-    // Unqualified ObservableSettings resolves the default preferences file;
-    // AnalyticsReporter/CrashReporter/WorkerManager come from the platform modules.
     factory { SettingsRepository(get(), get(), get(), get()) }
 
     viewModel {
@@ -34,7 +29,8 @@ val settingsModule = module {
         )
         SettingsViewModel(
             state = stateCommunication,
-            handler = eventHandler
+            handler = eventHandler,
+            appLock = get()
         )
     }
 }

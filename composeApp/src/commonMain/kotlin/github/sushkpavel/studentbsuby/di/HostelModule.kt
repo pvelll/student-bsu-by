@@ -9,13 +9,8 @@ import github.sushkpavel.studentbsuby.util.communication.StateFlowCommunication
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
-/**
- * Mirrors the original HostelModule (ViewModelComponent).
- */
 val hostelModule = module {
 
-    // Unqualified ObservableSettings resolves the default preferences file
-    // (the original injected unqualified SharedPreferences = default prefs).
     factory { HostelRepository(get(), get(), get(), get()) }
 
     viewModel {

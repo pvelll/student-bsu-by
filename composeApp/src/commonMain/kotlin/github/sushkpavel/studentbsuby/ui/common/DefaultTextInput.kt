@@ -46,10 +46,6 @@ fun DefaultTextInput(
     maxLines: Int = Int.MAX_VALUE,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
 ) {
-    // The text and the cursor position are owned by the field itself. The screens keep
-    // the text in a view model state that is updated asynchronously (through the event
-    // handlers on a background dispatcher), so driving BasicTextField with that String
-    // directly reset the selection on every round trip and the cursor jumped while typing.
     val state = remember { TextInputState(value) }
     state.reconcile(value)
 
@@ -118,15 +114,6 @@ fun DefaultTextInput(
     }
 }
 
-/**
- * Local source of truth of a text field whose text is mirrored in an asynchronously
- * updated external state.
- *
- * Texts sent to the owner via `onValueChange` are remembered as pending. An external value
- * equal to a pending text is an echo of a local edit and is ignored (newer local edits may
- * still be in flight); any other external value is a real programmatic change (prefilled
- * credentials, recognized captcha, cleared search) and replaces the local text.
- */
 private class TextInputState(initial: String) {
 
     var textFieldValue by mutableStateOf(

@@ -9,6 +9,7 @@ import github.sushkpavel.studentbsuby.util.exceptions.IncorrectResponseException
 import github.sushkpavel.studentbsuby.util.exceptions.UsernameNotFoundException
 import github.sushkpavel.studentbsuby.util.runCatchingSuspend
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.sync.withLock
 
 private const val PREF_CURRENTSEMESTER_ = "PREF_CURRENTSEMESTER_"
 
@@ -25,28 +26,27 @@ class SubjectsRepository(
         replaceCacheIf(old,new) && new.isNotEmpty()
     }
 
-    /**
-     * Loads the marks of all sessions.
-     *
-     * The page renders only the current session by default; all sessions are requested
-     * with the "Все сессии" postback, which must carry the view state of a freshly
-     * loaded page. If that postback fails for any reason the current session from the
-     * loaded page is returned instead, so the screen degrades instead of breaking.
-     */
     override suspend fun getFromWeb(): List<List<Subject>> {
         val username = usernameProvider.username
 
         if (username.isEmpty())
             throw UsernameNotFoundException()
 
-        val currentSessionPage = profileApi.studProgress().html()
+        val (currentSessionPage, allSessionsPage) = profileApi.studProgressLock.withLock {
+            val currentSessionPage = profileApi.studProgress().html()
 
-        val allSessionsPage = runCatchingSuspend {
-            val form = AspNetForm.parse(currentSessionPage)
-            if (!form.isValid)
-                throw IncorrectResponseException()
-            profileApi.subjects(form.postback(ProfileApi.ALL_SESSIONS_EVENT_TARGET)).html()
-        }.getOrNull()?.takeIf { it.contains(ProfileApi.PROGRESS_TABLE_ID) }
+            val allSessionsPage = runCatchingSuspend {
+                val form = AspNetForm.parse(currentSessionPage)
+                if (!form.isValid)
+                    throw IncorrectResponseException()
+                profileApi.subjects(form.postback(ProfileApi.ALL_SESSIONS_EVENT_TARGET)).html()
+            }.getOrNull()?.takeIf { it.contains(ProfileApi.PROGRESS_TABLE_ID) }
+
+            currentSessionPage to allSessionsPage
+        }
+
+        if (allSessionsPage == null && (getFromCache()?.size ?: 0) > 1)
+            throw IncorrectResponseException()
 
         val page = allSessionsPage ?: currentSessionPage
 
@@ -97,7 +97,9 @@ class CurrentSemesterRepository(
     }
 
     override suspend fun getFromWeb(): Int? {
-        val page = profileApi.studProgress().html()
+        val page = profileApi.studProgressLock.withLock {
+            profileApi.studProgress().html()
+        }
         return SubjectsParser.currentSemesterIndex(page)
     }
 

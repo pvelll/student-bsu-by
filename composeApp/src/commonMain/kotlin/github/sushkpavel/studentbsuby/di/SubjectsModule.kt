@@ -10,16 +10,10 @@ import github.sushkpavel.studentbsuby.util.communication.StateFlowCommunication
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
-/**
- * Mirrors the original SubjectsModule (ViewModelComponent).
- */
 val subjectsModule = module {
 
-    // Was @Singleton on the class itself.
     single { SubjectsRepository(get(), get(), get()) }
 
-    // Unqualified ObservableSettings resolves the default preferences file
-    // (the original injected unqualified SharedPreferences = default prefs).
     factory { CurrentSemesterRepository(get(), get(), get()) }
 
     viewModel {

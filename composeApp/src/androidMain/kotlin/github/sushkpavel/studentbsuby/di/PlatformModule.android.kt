@@ -15,6 +15,8 @@ import github.sushkpavel.studentbsuby.services.firebase.CrashReporter
 import github.sushkpavel.studentbsuby.services.firebase.CrashReporterImpl
 import github.sushkpavel.studentbsuby.services.firebase.RemoteConfigClient
 import github.sushkpavel.studentbsuby.services.firebase.RemoteConfigClientImpl
+import github.sushkpavel.studentbsuby.services.lock.BiometricAuthenticator
+import github.sushkpavel.studentbsuby.services.lock.BiometricAuthenticatorImpl
 import github.sushkpavel.studentbsuby.services.store.ReviewLauncher
 import github.sushkpavel.studentbsuby.services.store.ReviewLauncherImpl
 import github.sushkpavel.studentbsuby.services.store.UpdateLauncher
@@ -34,9 +36,6 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
-/**
- * Android bindings of the platform-dependent parts of the graph.
- */
 val platformModule = module {
 
     single { createAppDatabase(appDatabaseBuilder(androidContext())) }
@@ -45,9 +44,6 @@ val platformModule = module {
         provideCookiesSettings(androidContext())
     }
 
-    // One instance per process: every instance registers network callbacks that are
-    // never unregistered, and a shared one already holds the current connectivity
-    // when a screen starts observing it.
     single<ConnectivityManager> {
         InternetConnectivityManager(androidContext(), StateFlowCommunication(false))
     }
@@ -76,13 +72,10 @@ val platformModule = module {
     single<UpdateLauncher> { UpdateLauncherImpl(androidContext()) }
 
     single<PlatformActions> { PlatformActionsAndroid(androidContext()) }
+
+    single<BiometricAuthenticator> { BiometricAuthenticatorImpl(androidContext()) }
 }
 
-/**
- * Cookies preferences: the same encrypted file the original app used, with the legacy
- * okhttp cookie entries migrated to the JSON format BEFORE the preferences are wrapped
- * into Settings — existing sessions survive the update.
- */
 private fun provideCookiesSettings(context: Context): ObservableSettings {
     val preferences = provideSecureSharedPreferences(context.packageName + "_cookies")
     migrateLegacyCookies(preferences)

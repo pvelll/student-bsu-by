@@ -1,9 +1,9 @@
 package github.sushkpavel.studentbsuby.util
 
 interface PlatformActions {
-    fun exitApp()                       // Android: activity.finish(); iOS: no-op
-    fun openStorePage()                 // Play Store page / App Store page
-    fun openUrl(url: String)            // browser
-    fun shareFile(path: String, mime: String)  // FileProvider+chooser / UIActivityViewController
+    fun exitApp()
+    fun openStorePage()
+    fun openUrl(url: String)
+    fun shareFile(path: String, mime: String)
     suspend fun requestNotificationsPermission(): Boolean
 }

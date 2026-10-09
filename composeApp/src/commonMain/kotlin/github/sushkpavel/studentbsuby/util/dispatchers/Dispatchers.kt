@@ -4,14 +4,8 @@ import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
 
-/**
- * Coroutine dispatchers wrapper for simplifying testing
- * */
 interface Dispatchers : UIDispatcher, IODispatcher, ComputationalDispatcher {
 
-    /**
-     * Uses default [kotlinx.coroutines.Dispatchers]
-     * */
     class Base : Dispatchers {
 
         override fun launchUI(

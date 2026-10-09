@@ -29,11 +29,6 @@ fun MainViewController(): UIViewController {
     }
 }
 
-/**
- * Starts Koin exactly once (idempotent: skipped when a Koin context is already
- * running). [BackgroundSyncScheduler.register] must run before the application
- * finishes launching — BGTaskScheduler requirement.
- */
 private fun initKoinIfNeeded() {
     if (KoinPlatformTools.defaultContext().getOrNull() != null)
         return
@@ -45,12 +40,6 @@ private fun initKoinIfNeeded() {
 
 private const val KEY_KEYCHAIN_OWNED = "keychain_owned_by_install"
 
-/**
- * Keychain items outlive the app, so after a reinstall the previous login, password and
- * session would still be there. UserDefaults are removed together with the app: a missing
- * flag means a fresh install. Skipped while the device is locked after a reboot, when
- * UserDefaults can't be read yet.
- */
 private fun clearKeychainAfterReinstall(koin: Koin) {
     if (!UIApplication.sharedApplication.protectedDataAvailable)
         return
@@ -62,12 +51,6 @@ private fun clearKeychainAfterReinstall(koin: Koin) {
     defaults.setBool(true, forKey = KEY_KEYCHAIN_OWNED)
 }
 
-/**
- * Debug binaries only (simulator testing, the site is reachable from Belarus only):
- * `STUDENTBSUBY_DEBUG_COOKIE="ASP.NET_SessionId=...; AuthCookie=..."` and
- * `STUDENTBSUBY_DEBUG_USERNAME=login` in the process environment restore an existing
- * session without going through the login form.
- */
 private fun seedDebugSession(koin: Koin) {
     if (!Platform.isDebugBinary)
         return

@@ -26,7 +26,5 @@ class LoginViewModel(
     suspendEventHandler = eventHandler,
     errorHandler = errorHandler
 ) {
-    // A session can only be restored when the credentials are known: the username is
-    // also the key of every cache, so a "logged in" state without it is useless.
     val skipLogin = loginRepository.autoLogin && loginRepository.username.isNotBlank()
 }

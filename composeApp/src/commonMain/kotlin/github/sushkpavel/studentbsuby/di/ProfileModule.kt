@@ -16,9 +16,6 @@ import github.sushkpavel.studentbsuby.util.communication.StateFlowCommunication
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
-/**
- * Mirrors the original ProfileModule (ViewModelComponent).
- */
 val profileModule = module {
 
     factory { UserRepository(get(), get(), get()) }

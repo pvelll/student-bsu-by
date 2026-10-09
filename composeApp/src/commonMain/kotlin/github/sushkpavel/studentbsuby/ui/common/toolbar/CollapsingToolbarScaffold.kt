@@ -46,7 +46,6 @@ class CollapsingToolbarScaffoldState(
 	internal val offsetYState = mutableStateOf(initialOffsetY)
 }
 
-// android.os.Bundle replaced with a List<Int> holder (KMP saveable registry)
 private class CollapsingToolbarScaffoldStateSaver: Saver<CollapsingToolbarScaffoldState, List<Int>> {
 	override fun restore(value: List<Int>): CollapsingToolbarScaffoldState =
 		CollapsingToolbarScaffoldState(

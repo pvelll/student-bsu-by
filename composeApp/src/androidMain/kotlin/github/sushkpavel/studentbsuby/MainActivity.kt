@@ -1,17 +1,15 @@
 package github.sushkpavel.studentbsuby
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.fragment.app.FragmentActivity
 import github.sushkpavel.studentbsuby.util.CurrentActivityHolder
 
-class MainActivity : ComponentActivity() {
+class MainActivity : FragmentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        // Must run before super.onCreate: keeps the launch splash (logo on the brand
-        // background) until the first frame is drawn and then swaps in the app theme.
         installSplashScreen()
         super.onCreate(savedInstanceState)
         CurrentActivityHolder.set(this)

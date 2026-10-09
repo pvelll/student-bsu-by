@@ -45,6 +45,7 @@ import github.sushkpavel.studentbsuby.ui.screens.drawer.about.AboutScreen
 import github.sushkpavel.studentbsuby.ui.screens.drawer.hostel.HostelScreen
 import github.sushkpavel.studentbsuby.ui.screens.drawer.news.NewsScreen
 import github.sushkpavel.studentbsuby.ui.screens.drawer.paidservices.PaidServicesScreen
+import github.sushkpavel.studentbsuby.ui.screens.drawer.progress.ProgressScreen
 import github.sushkpavel.studentbsuby.ui.screens.drawer.subjects.SubjectsScreen
 import github.sushkpavel.studentbsuby.ui.screens.drawer.timetable.TimetableScreen
 import github.sushkpavel.studentbsuby.util.DataState
@@ -80,6 +81,7 @@ fun DrawerScreen(
         listOf(
             DrawerRoute.News,
             DrawerRoute.Subjects,
+            DrawerRoute.Progress,
             DrawerRoute.Timetable,
             DrawerRoute.Hostel,
             DrawerRoute.PaidServices,
@@ -162,6 +164,14 @@ fun DrawerScreen(
                     exitTransition = { animOut }
                 ) {
                     SubjectsScreen(isTablet, onMenuClicked = ::onMenuClicked)
+                }
+
+                animatedComposable(
+                    DrawerRoute.Progress.route,
+                    enterTransition = { animIn },
+                    exitTransition = { animOut }
+                ) {
+                    ProgressScreen(isTablet, onMenuClicked = ::onMenuClicked)
                 }
 
                 animatedComposable(

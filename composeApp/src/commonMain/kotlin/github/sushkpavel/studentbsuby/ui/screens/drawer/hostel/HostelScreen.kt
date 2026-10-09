@@ -392,12 +392,6 @@ private fun NonProvidedHostelScreen(
     }
 }
 
-/**
- * Photo of the hostel above the toolbar. The photos are hosted on a third party site
- * that is not always reachable, so the image is only given space once it has actually
- * been decoded; otherwise the toolbar collapses to the app bar and the content is not
- * pushed down by an empty placeholder.
- */
 @Composable
 private fun HostelHeaderImage(url: String, alpha: Float) {
     val painter = rememberAsyncImagePainter(model = url)

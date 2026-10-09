@@ -16,19 +16,10 @@ import github.sushkpavel.studentbsuby.util.PersistentCookiesStorage
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
-/**
- * Mirrors the original RetrofitModule. The Retrofit/OkHttp stack is replaced by the
- * shared Ktor [io.ktor.client.HttpClient]; api wrappers keep their stateful
- * VIEWSTATE singletons exactly like the original @Singleton providers.
- */
 val networkModule = module {
 
-    // provideBaseUrl(): android.net.Uri -> String (no trailing slash).
     single(named("BaseUrl")) { "https://student.bsu.by" }
 
-    // ONE storage instance shared between the HttpClient cookie plugin and the
-    // LoginCookieManager binding (original RetrofitModule shared the
-    // PreferencesCookieCache instance for provideCookieCleaner).
     single { PersistentCookiesStorage(get(named("CookiesPrefs"))) }
 
     single<LoginCookieManager> { get<PersistentCookiesStorage>() }

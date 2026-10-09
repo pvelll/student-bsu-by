@@ -19,8 +19,6 @@ class InternetConnectivityManager(
 
     private val service = context
         .getSystemService(android.net.ConnectivityManager::class.java).also {
-            // Current state first: the callbacks report it asynchronously and observers
-            // must not see a spurious "offline" value meanwhile.
             isNetworkConnected.map(it.isCurrentlyConnected())
             wifiCallback = it.register(NetworkCapabilities.TRANSPORT_WIFI) {
                 wifiAvailable = it
