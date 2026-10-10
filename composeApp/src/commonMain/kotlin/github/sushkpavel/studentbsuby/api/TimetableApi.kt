@@ -29,11 +29,6 @@ interface TimetableApi {
 
     suspend fun timetable(dayOfWeek: FormUrlEncodedBody) : HttpResponse
 
-    /**
-     * False when the last loaded schedule page has the weekday buttons disabled, i.e.
-     * no schedule is published for the student. Posting back a disabled button only
-     * yields a redirect to the error page.
-     */
     val hasSchedule: Boolean get() = true
 }
 
@@ -55,10 +50,6 @@ class TimetableApiImpl(private val client : HttpClient) : TimetableApi {
         }
 }
 
-/**
- * Keeps the view state of the last loaded schedule page and attaches it to the
- * weekday postbacks.
- */
 class TimetableApiWrapper(private val api : TimetableApi) : TimetableApi{
 
     private var form: AspNetForm = AspNetForm.parse("")

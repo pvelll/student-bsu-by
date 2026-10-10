@@ -73,6 +73,8 @@ kotlin {
             implementation(libs.ktor.client.okhttp)
             implementation(libs.koin.android)
             implementation(libs.androidx.work.runtime)
+            implementation(libs.androidx.biometric)
+            implementation(libs.androidx.fragment)
             implementation(libs.mlkit.text.recognition)
             implementation(libs.androidx.security.crypto)
 

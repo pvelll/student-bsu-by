@@ -17,6 +17,7 @@ sealed class Route(val route : String) {
         companion object DrawerScreen : Route.DrawerScreen()
 
         object Subjects : Route.DrawerScreen("subjects")
+        object Progress : Route.DrawerScreen("progress")
         object Timetable : Route.DrawerScreen("timetable")
         object About : Route.DrawerScreen("about")
         object Hostel : Route.DrawerScreen("hostel")

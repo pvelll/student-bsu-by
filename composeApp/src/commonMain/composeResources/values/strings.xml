@@ -142,6 +142,177 @@
     <string name="connecting">Подключение…</string>
     <string name="error_load_news">Не удалось загрузить список новостей</string>
 
+    <string name="progress">Успеваемость</string>
+    <string name="progress_empty">Предметы не найдены, поэтому считать пока нечего</string>
+    <string name="progress_average">Средний балл</string>
+    <string name="progress_no_marks">Оценок пока нет</string>
+    <string name="progress_no_marks_hint">Статистика появится после первой сессии</string>
+    <string name="progress_delta">%1$s к прошлому семестру</string>
+    <string name="progress_delta_same">Как в прошлом семестре</string>
+    <string name="progress_chart">Динамика среднего балла</string>
+    <string name="progress_chart_semester">За семестр</string>
+    <string name="progress_chart_cumulative">Накопительный</string>
+    <string name="progress_chart_empty">График появится, когда в зачётке будут оценки</string>
+    <string name="progress_chart_selected">%1$d семестр</string>
+    <string name="progress_chart_selected_cumulative">накопительный %1$s</string>
+    <string name="progress_summary">Сводка</string>
+    <string name="progress_stat_best">лучший: %1$d семестр</string>
+    <string name="progress_session">Текущая сессия</string>
+    <string name="progress_session_exams">Экзамены</string>
+    <string name="progress_session_credits">Зачёты</string>
+    <string name="progress_session_of">%1$d из %2$d</string>
+    <string name="progress_session_pending">Осталось сдать: %1$s</string>
+    <string name="progress_session_pending_more">и ещё %1$d</string>
+    <string name="progress_session_done">Сессия закрыта — можно выдохнуть!</string>
+    <string name="progress_semester_filter">Семестр</string>
+    <string name="progress_semester_all">Все</string>
+    <string name="progress_rating">Рейтинг предметов</string>
+    <string name="progress_rating_best">Лучшие</string>
+    <string name="progress_rating_worst">Слабые</string>
+    <string name="progress_rating_show_all">Показать все (%1$d)</string>
+    <string name="progress_rating_collapse">Свернуть</string>
+    <string name="progress_rating_exam">экзамен</string>
+    <string name="progress_rating_credit">дифзачёт</string>
+    <string name="progress_distribution">Распределение оценок</string>
+    <string name="progress_distribution_mode">Чаще всего — %1$d</string>
+    <string name="progress_group_excellent">9–10</string>
+    <string name="progress_group_good">6–8</string>
+    <string name="progress_group_satisfactory">4–5</string>
+    <string name="progress_group_failed">1–3</string>
+    <string name="progress_goal">Калькулятор цели</string>
+    <string name="progress_goal_target">Хочу средний балл</string>
+    <string name="progress_goal_count">Оценок впереди</string>
+    <string name="progress_goal_required">Нужно в среднем</string>
+    <string name="progress_goal_example">Например, такие оценки:</string>
+    <string name="progress_goal_reached">Цель уже достигнута: даже с четвёрками средний балл не опустится ниже</string>
+    <string name="progress_goal_any">Хватит любых положительных оценок</string>
+    <string name="progress_goal_unreachable">Не получится: даже с одними десятками средний балл будет %1$s</string>
+    <string name="progress_goal_hint">Расчёт учитывает все оценки, по которым считается средний балл</string>
+    <string name="progress_goal_decrease">Меньше</string>
+    <string name="progress_goal_increase">Больше</string>
+    <string name="progress_semester_caption">%1$d сем.</string>
+
+    <plurals name="progress_stat_marks">
+        <item quantity="one">оценка</item>
+        <item quantity="few">оценки</item>
+        <item quantity="many">оценок</item>
+        <item quantity="other">оценки</item>
+    </plurals>
+    <plurals name="progress_stat_excellent">
+        <item quantity="one">десятка</item>
+        <item quantity="few">десятки</item>
+        <item quantity="many">десяток</item>
+        <item quantity="other">десятки</item>
+    </plurals>
+    <plurals name="progress_stat_retakes">
+        <item quantity="one">пересдача</item>
+        <item quantity="few">пересдачи</item>
+        <item quantity="many">пересдач</item>
+        <item quantity="other">пересдачи</item>
+    </plurals>
+
+    <plurals name="progress_marks_count">
+        <item quantity="one">по %1$d оценке</item>
+        <item quantity="few">по %1$d оценкам</item>
+        <item quantity="many">по %1$d оценкам</item>
+        <item quantity="other">по %1$d оценкам</item>
+    </plurals>
+
+    <string name="security">Безопасность</string>
+    <string name="biometric_lock_face">Вход по Face ID</string>
+    <string name="biometric_lock_fingerprint">Вход по отпечатку пальца</string>
+    <string name="biometric_lock_generic">Вход по биометрии</string>
+    <string name="biometric_lock_helper">Приложение попросит подтвердить личность при запуске и при возвращении к нему. Если биометрия не сработает, можно ввести код-пароль устройства.</string>
+    <string name="biometric_prompt_title">Вход в приложение</string>
+    <string name="biometric_prompt_subtitle">Подтвердите, что это вы</string>
+    <string name="biometric_prompt_enable">Подтвердите, чтобы включить вход по биометрии</string>
+    <string name="app_locked">Приложение заблокировано</string>
+    <string name="app_locked_hint">Подтвердите личность, чтобы продолжить</string>
+    <string name="unlock">Разблокировать</string>
+    <string name="unlock_with_password">Выйти и войти по паролю</string>
+    <string name="biometric_error">Не удалось подтвердить личность</string>
+
+    <string-array name="motivation_no_marks">
+        <item>Первая сессия впереди — самое время задать высокую планку.</item>
+        <item>Чистый лист: каждая оценка здесь будет только твоей заслугой.</item>
+        <item>Хороший старт — половина диплома. Начни с конспектов.</item>
+        <item>Пока нет оценок — нет и плохих. Сделай так, чтобы первые были отличными.</item>
+        <item>Сессия любит тех, кто готовится с первой недели.</item>
+        <item>Заведи привычку разбирать лекции в тот же день — на сессии скажешь себе спасибо.</item>
+    </string-array>
+
+    <string-array name="motivation_below_4">
+        <item>Сложный период — не приговор. Каждая пересдача — шанс показать, на что ты способен.</item>
+        <item>Начни с одного предмета: маленькая победа даёт силы на следующую.</item>
+        <item>Преподаватели чаще идут навстречу тем, кто приходит на консультации. Попробуй!</item>
+        <item>Даже самый длинный путь к диплому начинается с одного сданного зачёта.</item>
+        <item>Ты не один такой — главное не опускать руки. Составь план и иди по нему.</item>
+        <item>Попроси конспекты у одногруппников и разбирайся по шагам — это реально.</item>
+    </string-array>
+
+    <string-array name="motivation_4_5">
+        <item>Сессия сдана — это уже победа. Теперь давай поднимем планку!</item>
+        <item>Между «сдал» и «сдал хорошо» — всего пара вечеров с учебником.</item>
+        <item>Ходи на пары: половина ответов на экзамене звучит именно там.</item>
+        <item>Ещё немного усилий — и пятёрки превратятся в шестёрки и семёрки.</item>
+        <item>Главное — стабильность. Каждая следующая оценка может быть выше.</item>
+        <item>Сдавать ты уже умеешь. Осталось научиться сдавать с запасом.</item>
+    </string-array>
+
+    <string-array name="motivation_5_6">
+        <item>Крепкая база есть — пора строить на ней что-то большее.</item>
+        <item>Шаг до семёрок меньше, чем кажется. Начни готовиться чуть раньше.</item>
+        <item>Задавай вопросы на семинарах — это лучший способ разобраться.</item>
+        <item>Средний балл растёт от маленьких побед. Возьми один предмет под контроль.</item>
+        <item>Ты на верном пути — добавь системности, и цифры поползут вверх.</item>
+        <item>Хорошая новость: дальше будет только интереснее и выше.</item>
+    </string-array>
+
+    <string-array name="motivation_6_7">
+        <item>Крепкий середнячок с большим потенциалом. Ещё рывок — и ты в хорошистах!</item>
+        <item>Семёрка уже на горизонте. Не сбавляй темп!</item>
+        <item>Материал ты знаешь — осталось научиться красиво его рассказывать.</item>
+        <item>Пара дополнительных часов в неделю — и следующая сессия порадует.</item>
+        <item>Стабильно и надёжно. Теперь добавим немного блеска.</item>
+        <item>Повтори слабые темы заранее — и экзамен станет формальностью.</item>
+    </string-array>
+
+    <string-array name="motivation_7_8">
+        <item>Хороший уровень! До восьмёрки рукой подать.</item>
+        <item>Ты уверенно держишь планку — пора замахнуться на большее.</item>
+        <item>Ещё немного — и в зачётке начнут появляться девятки.</item>
+        <item>Знания есть, система есть. Добавь немного амбиций!</item>
+        <item>Такой средний балл — уже повод для гордости. И для новых целей.</item>
+        <item>Продолжай в том же духе — отличный диплом ближе, чем кажется.</item>
+    </string-array>
+
+    <string-array name="motivation_8_9">
+        <item>Отличная работа! Ты в числе сильнейших на курсе.</item>
+        <item>Восьмёрки и девятки — твой стиль. Держи марку!</item>
+        <item>До девяти совсем чуть-чуть — один уверенный рывок.</item>
+        <item>Преподаватели запоминают таких студентов. И это приятно.</item>
+        <item>Твоя зачётка — повод для гордости. Продолжай в том же темпе!</item>
+        <item>Не забывай отдыхать: хороший сон — тоже часть подготовки.</item>
+    </string-array>
+
+    <string-array name="motivation_9_95">
+        <item>Блестяще! Ты среди лучших — и это заслуженно.</item>
+        <item>Девятки в зачётке — результат системной работы. Респект!</item>
+        <item>Ты на пути к красному диплому. Не сбавляй обороты!</item>
+        <item>Высокая планка — твоя норма. Так держать!</item>
+        <item>Таким средним баллом можно вдохновлять всю группу.</item>
+        <item>Ещё немного — и ты в клубе «девять с половиной».</item>
+    </string-array>
+
+    <string-array name="motivation_95_10">
+        <item>Безупречно! Твоя зачётка — эталон.</item>
+        <item>Почти идеально. Почти — потому что идеал, видимо, это ты.</item>
+        <item>Красный диплом уже примеряет твоё имя.</item>
+        <item>Легенда факультета в деле. Береги себя и не выгорай!</item>
+        <item>Такой уровень преподаватели ставят в пример.</item>
+        <item>Невероятный результат. Не забывай радоваться своим успехам!</item>
+    </string-array>
+
     <string-array name="months">
         <item>Январь</item>
         <item>Февраль</item>

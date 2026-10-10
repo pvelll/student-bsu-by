@@ -5,16 +5,6 @@ import com.fleeksoft.ksoup.nodes.Element
 import github.sushkpavel.studentbsuby.api.asyncPostbackHtml
 import github.sushkpavel.studentbsuby.data.models.Subject
 
-/**
- * Parser of the "Успеваемость" (StudProgress) page of student.bsu.by.
- *
- * The marks table (`tblProgress`) has 10 columns: number, subject, 6 hour columns,
- * credit ("Зачет") and exam ("Экзамен"). When all sessions are requested the table
- * contains one block per session, each starting with a caption row
- * (`<td colspan="10"><b>1 курс, зимняя сессия</b></td>`) followed by two header rows.
- * A credit/exam that has not been taken yet is rendered in italics ("<i>зачет</i>"),
- * unsatisfactory marks in red, retakes are marked with apostrophes.
- */
 object SubjectsParser {
 
     private val sessionCaption = Regex("""\d+\s*курс""", RegexOption.IGNORE_CASE)

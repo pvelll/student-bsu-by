@@ -49,7 +49,6 @@ private class UpdateRequestedHandler(
     TimetableEvent.UpdateRequested::class
 ){
 
-    // The page state of the schedule api is shared, loads must not interleave.
     private val mutex = Mutex()
 
     override suspend fun launch() {

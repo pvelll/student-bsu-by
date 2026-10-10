@@ -20,6 +20,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import github.sushkpavel.studentbsuby.resources.Res
 import github.sushkpavel.studentbsuby.resources.appearance
+import github.sushkpavel.studentbsuby.resources.biometric_lock_face
+import github.sushkpavel.studentbsuby.resources.biometric_lock_fingerprint
+import github.sushkpavel.studentbsuby.resources.biometric_lock_generic
+import github.sushkpavel.studentbsuby.resources.biometric_lock_helper
+import github.sushkpavel.studentbsuby.resources.security
 import github.sushkpavel.studentbsuby.resources.other
 import github.sushkpavel.studentbsuby.resources.setting_collect_crashlytics
 import github.sushkpavel.studentbsuby.resources.setting_collect_crashlytics_helper
@@ -28,6 +33,7 @@ import github.sushkpavel.studentbsuby.resources.setting_collect_statistics_helpe
 import github.sushkpavel.studentbsuby.resources.settings
 import github.sushkpavel.studentbsuby.resources.settings_dark_theme_forsed
 import github.sushkpavel.studentbsuby.resources.settings_dark_theme_system
+import github.sushkpavel.studentbsuby.services.lock.BiometryType
 import github.sushkpavel.studentbsuby.ui.common.HtmlText
 import github.sushkpavel.studentbsuby.ui.common.NavigationMenuButton
 import github.sushkpavel.studentbsuby.ui.common.toolbar.CollapsingToolbarScaffold
@@ -41,6 +47,7 @@ import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
+import androidx.compose.runtime.collectAsState as collectFlowAsState
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -135,6 +142,22 @@ private fun Body(viewModel: SettingsViewModel) {
             )
         }
 
+        val biometricLock by viewModel.biometricLock.collectFlowAsState()
+
+        if (viewModel.biometry != BiometryType.None || biometricLock) {
+            GroupName(name = stringResource(Res.string.security))
+            TogglePreference(
+                title = when (viewModel.biometry) {
+                    BiometryType.Face -> Res.string.biometric_lock_face
+                    BiometryType.Fingerprint -> Res.string.biometric_lock_fingerprint
+                    BiometryType.Generic, BiometryType.None -> Res.string.biometric_lock_generic
+                },
+                helper = AnnotatedString(stringResource(Res.string.biometric_lock_helper)),
+                checked = biometricLock,
+                onChanged = viewModel::setBiometricLock
+            )
+        }
+
         val state by viewModel.state.collectAsState()
 
         if (platformInfo.platformName == "android") {
@@ -157,8 +180,6 @@ private fun Body(viewModel: SettingsViewModel) {
             )
         }
 
-        // "Share logs" is hidden: the bound DefaultLogger keeps no log file, so the
-        // button did nothing. Bring it back together with FileLogger.
         Text(
             text = platformInfo.versionName,
             style = MaterialTheme.typography.caption,

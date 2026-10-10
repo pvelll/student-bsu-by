@@ -12,9 +12,6 @@ import github.sushkpavel.studentbsuby.util.communication.StateFlowCommunication
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
-/**
- * Mirrors the original PaidServicesModule (ViewModelComponent).
- */
 val paidServicesModule = module {
 
     factory { PaidServicesRepository(get(), get(), get(), get()) }

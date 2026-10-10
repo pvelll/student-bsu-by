@@ -81,8 +81,6 @@ private class SettingClickedHandler(
     ProfileEvent.SettingsClicked::class
 ) {
     override suspend fun handle(event: ProfileEvent.SettingsClicked) {
-        // Events are handled on a background dispatcher; NavController must be
-        // driven from the main thread, otherwise the navigation silently fails.
         dispatchers.runOnUI {
             event.navController.navigate(Route.SettingsScreen.route) {
                 launchSingleTop = true
@@ -124,8 +122,6 @@ private class UpdateRequestedHandler(
         update(DataSource.All)
         connectivityMapper.map(ConnectivityUi.Connected)
 
-        // The first value is the current connectivity (hot state flow), the data has
-        // just been loaded above; only real changes re-check the session and reload.
         var first = true
 
         connectivityManager.isNetworkConnected.collect { connected ->

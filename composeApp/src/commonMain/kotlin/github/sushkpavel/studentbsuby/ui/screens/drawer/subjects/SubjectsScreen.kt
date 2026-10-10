@@ -425,9 +425,6 @@ private fun AllSemesters(
     val state = rememberPagerState(pageCount = { subjects.size })
     val scope = rememberCoroutineScope()
 
-    // The current semester arrives asynchronously (cache, then web). Follow it until the
-    // user picks a semester; only user driven page changes are reported back, otherwise
-    // the very first composition would already mark the semester as chosen by the user.
     var userSelected by rememberSaveable { mutableStateOf(false) }
     val latestInitialSemester by rememberUpdatedState(initialSemester)
 
@@ -580,11 +577,6 @@ private fun Page(
     }
 }
 
-/**
- * In-file port of accompanist's Modifier.pagerTabIndicatorOffset for the
- * androidx.compose.foundation pager (accompanist is not available in CMP).
- * Behavior matches com.google.accompanist.pager.pagerTabIndicatorOffset.
- */
 private fun Modifier.pagerTabIndicatorOffset(
     pagerState: PagerState,
     tabPositions: List<TabPosition>,

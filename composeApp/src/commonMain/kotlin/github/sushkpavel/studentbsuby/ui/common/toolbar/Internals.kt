@@ -26,17 +26,6 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.pointer.util.VelocityTracker
 import kotlin.time.TimeSource
 
-/**
- * HACK: Compose tracks velocity with a local coordinate system which leads to an undesired
- * scroll experience. To mitigate this issue, we use RelativeVelocityTracker which tracks velocity
- * with a global coordinate system. In NestedScrollConnection, onPreScroll() gives us a delta
- * based on a global coordinate, we can use this value to properly calculate the velocity.
- *
- * The fundamental goal of this class is to override the Compose-calculated scroll velocity to
- * our manually calculated one.
- *
- * @see <a href="https://github.com/onebone/compose-collapsing-toolbar/issues/7">this issue</a>
- */
 internal class RelativeVelocityTracker(
 	private val timeProvider: CurrentTimeProvider
 ) {
@@ -60,15 +49,6 @@ internal class RelativeVelocityTracker(
 	}
 }
 
-/**
- * [androidx.compose.ui.input.nestedscroll.NestedScrollConnection.onPreFling] subtracts its scroll
- * value by the returned value to calculate a remaining velocity.
- *
- * This function provides a delta that will override the remaining value that is calculated by the
- * compose framework.
- *
- * @see <a href="https://github.com/onebone/compose-collapsing-toolbar/issues/7">this issue</a>
- */
 internal fun RelativeVelocityTracker.deriveDelta(initial: Float) =
 	initial - reset()
 
@@ -76,8 +56,6 @@ internal interface CurrentTimeProvider {
 	fun now(): Long
 }
 
-// android.os.SystemClock.uptimeMillis() replaced with a monotonic kotlin.time source
-// (VelocityTracker only needs deltas of a monotonic clock)
 internal class CurrentTimeProviderImpl: CurrentTimeProvider {
 	private val mark = TimeSource.Monotonic.markNow()
 

@@ -59,17 +59,9 @@ import kotlin.math.roundToInt
 class CollapsingToolbarState(
 	initial: Int = Int.MAX_VALUE
 ): ScrollableState {
-	/**
-	 * [height] indicates current height of the toolbar.
-	 */
 	var height: Int by mutableStateOf(initial)
 		private set
 
-	/**
-	 * [minHeight] indicates the minimum height of the collapsing toolbar. The toolbar
-	 * may collapse its height to [minHeight] but not smaller. This size is determined by
-	 * the smallest child.
-	 */
 	var minHeight: Int
 		get() = minHeightState
 		internal set(value) {
@@ -80,11 +72,6 @@ class CollapsingToolbarState(
 			}
 		}
 
-	/**
-	 * [maxHeight] indicates the maximum height of the collapsing toolbar. The toolbar
-	 * may expand its height to [maxHeight] but not larger. This size is determined by
-	 * the largest child.
-	 */
 	var maxHeight: Int
 		get() = maxHeightState
 		internal set(value) {
@@ -127,9 +114,6 @@ class CollapsingToolbarState(
 
 	private var deferredConsumption: Float = 0f
 
-	/**
-	 * @return consumed scroll value is returned
-	 */
 	@Deprecated(
 		message = "feedScroll() is deprecated, use dispatchRawDelta() instead.",
 		replaceWith = ReplaceWith("dispatchRawDelta(value)")
@@ -162,9 +146,6 @@ class CollapsingToolbarState(
 		}
 	}
 
-	/**
-	 * @return Remaining velocity after fling
-	 */
 	suspend fun fling(flingBehavior: FlingBehavior, velocity: Float): Float {
 		var left = velocity
 		scroll {

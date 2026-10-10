@@ -52,13 +52,6 @@ import kotlin.math.absoluteValue
 
 private const val DragMultiplier = 0.5f
 
-/**
- * Creates a [SwipeRefreshState] that is remembered across compositions.
- *
- * Changes to [isRefreshing] will result in the [SwipeRefreshState] being updated.
- *
- * @param isRefreshing the value for [SwipeRefreshState.isRefreshing]
- */
 @Composable
 fun rememberSwipeRefreshState(
     isRefreshing: Boolean
@@ -72,13 +65,6 @@ fun rememberSwipeRefreshState(
     }
 }
 
-/**
- * A state object that can be hoisted to control and observe changes for [SwipeRefresh].
- *
- * In most cases, this will be created via [rememberSwipeRefreshState].
- *
- * @param isRefreshing the initial value for [SwipeRefreshState.isRefreshing]
- */
 @Stable
 class SwipeRefreshState(
     isRefreshing: Boolean,
@@ -86,20 +72,11 @@ class SwipeRefreshState(
     private val _indicatorOffset = Animatable(0f)
     private val mutatorMutex = MutatorMutex()
 
-    /**
-     * Whether this [SwipeRefreshState] is currently refreshing or not.
-     */
     var isRefreshing: Boolean by mutableStateOf(isRefreshing)
 
-    /**
-     * Whether a swipe/drag is currently in progress.
-     */
     var isSwipeInProgress: Boolean by mutableStateOf(false)
         internal set
 
-    /**
-     * The current offset for the indicator, in pixels.
-     */
     val indicatorOffset: Float get() = _indicatorOffset.value
 
     internal suspend fun animateOffsetTo(offset: Float) {
@@ -108,9 +85,6 @@ class SwipeRefreshState(
         }
     }
 
-    /**
-     * Dispatch scroll delta in pixels from touch events.
-     */
     internal suspend fun dispatchScrollDelta(delta: Float) {
         mutatorMutex.mutate(MutatePriority.UserInput) {
             _indicatorOffset.snapTo(_indicatorOffset.value + delta)
@@ -130,11 +104,8 @@ private class SwipeRefreshNestedScrollConnection(
         available: Offset,
         source: NestedScrollSource
     ): Offset = when {
-        // If swiping isn't enabled, return zero
         !enabled -> Offset.Zero
-        // If we're refreshing, return zero
         state.isRefreshing -> Offset.Zero
-        // If the user is swiping up, handle it
         source == NestedScrollSource.UserInput && available.y < 0 -> onScroll(available)
         else -> Offset.Zero
     }
@@ -144,11 +115,8 @@ private class SwipeRefreshNestedScrollConnection(
         available: Offset,
         source: NestedScrollSource
     ): Offset = when {
-        // If swiping isn't enabled, return zero
         !enabled -> Offset.Zero
-        // If we're refreshing, return zero
         state.isRefreshing -> Offset.Zero
-        // If the user is swiping down and there's y remaining, handle it
         source == NestedScrollSource.UserInput && available.y > 0 -> onScroll(available)
         else -> Offset.Zero
     }
@@ -163,7 +131,6 @@ private class SwipeRefreshNestedScrollConnection(
             coroutineScope.launch {
                 state.dispatchScrollDelta(dragConsumed)
             }
-            // Return the consumed Y
             Offset(x = 0f, y = dragConsumed / DragMultiplier)
         } else {
             Offset.Zero
@@ -171,16 +138,12 @@ private class SwipeRefreshNestedScrollConnection(
     }
 
     override suspend fun onPreFling(available: Velocity): Velocity {
-        // If we're dragging, not currently refreshing and scrolled
-        // past the trigger point, refresh!
         if (!state.isRefreshing && state.indicatorOffset >= refreshTrigger) {
             onRefresh()
         }
 
-        // Reset the drag in progress state
         state.isSwipeInProgress = false
 
-        // Don't consume any velocity, to allow the scrolling layout to fling
         return Velocity.Zero
     }
 }
@@ -235,20 +198,16 @@ fun SwipeRefresh(
     val coroutineScope = rememberCoroutineScope()
     val updatedOnRefresh = rememberUpdatedState(onRefresh)
 
-    // Our LaunchedEffect, which animates the indicator to its resting position
     LaunchedEffect(state.isSwipeInProgress) {
         if (!state.isSwipeInProgress) {
-            // If there's not a swipe in progress, rest the indicator at 0f
             state.animateOffsetTo(0f)
         }
     }
 
     val refreshTriggerPx = with(LocalDensity.current) { refreshTriggerDistance.toPx() }
 
-    // Our nested scroll connection, which updates our state.
     val nestedScrollConnection = remember(state, coroutineScope) {
         SwipeRefreshNestedScrollConnection(state, coroutineScope) {
-            // On refresh, re-dispatch to the update onRefresh block
             updatedOnRefresh.value.invoke()
         }
     }.apply {
@@ -261,13 +220,9 @@ fun SwipeRefresh(
 
         Box(
             Modifier
-                // If we're not clipping to the padding, we use clipToBounds() before the padding()
-                // modifier.
                 .let { if (!clipIndicatorToPadding) it.clipToBounds() else it }
                 .padding(indicatorPadding)
                 .matchParentSize()
-                // Else, if we're are clipping to the padding, we use clipToBounds() after
-                // the padding() modifier.
                 .let { if (clipIndicatorToPadding) it.clipToBounds() else it }
         ) {
             Box(Modifier.align(indicatorAlignment)) {

@@ -4,6 +4,7 @@ import com.fleeksoft.ksoup.Ksoup
 import github.sushkpavel.studentbsuby.api.ProfileApi
 import github.sushkpavel.studentbsuby.dao.UsersDao
 import github.sushkpavel.studentbsuby.data.models.User
+import kotlinx.coroutines.sync.withLock
 
 class UserRepository(
     private val dao : UsersDao,
@@ -17,7 +18,7 @@ class UserRepository(
 
     override suspend fun getFromWeb(): User {
 
-        val doc = Ksoup.parse(api.studProgress().html())
+        val doc = Ksoup.parse(api.studProgressLock.withLock { api.studProgress().html() })
 
         val name = doc.getElementById("ctl00_ctl00_ContentPlaceHolder0_lbFIO1")?.text()
         val faculty = doc
