@@ -1,17 +1,21 @@
 package github.sushkpavel.studentbsuby.repo
 
 import github.sushkpavel.studentbsuby.api.FormUrlEncodedBody
-import github.sushkpavel.studentbsuby.api.IseuTimetableApi
 import github.sushkpavel.studentbsuby.api.TimetableApi
 import github.sushkpavel.studentbsuby.api.isScheduleResponse
 import github.sushkpavel.studentbsuby.dao.LessonsDao
 import github.sushkpavel.studentbsuby.data.models.Lesson
+import github.sushkpavel.studentbsuby.data.models.User
 import github.sushkpavel.studentbsuby.util.Calendar
+import github.sushkpavel.studentbsuby.util.exceptions.GroupNotFoundException
+import github.sushkpavel.studentbsuby.util.exceptions.UsernameNotFoundException
 import io.ktor.client.statement.HttpResponse
 import kotlinx.coroutines.runBlocking
 import kotlinx.datetime.LocalDate
+import java.io.IOException
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
@@ -28,36 +32,155 @@ class TimetableRepositoryTest {
         override suspend fun clear(username: String) = Unit
     }
 
-    private val iseuApi = object : IseuTimetableApi {
-        override suspend fun page(): HttpResponse = error("not used")
-        override suspend fun postback(form: FormUrlEncodedBody): HttpResponse = error("not used")
-    }
-
-    // Tuesday
-    private val calendar = object : Calendar {
-        override val dayOfMonth = 13
-        override val dayOfWeek = 1
-        override val month = 9
-        override val year = 2026
+    private class FakeCalendar(private val today: LocalDate) : Calendar {
+        override val dayOfMonth = today.day
+        override val dayOfWeek = today.dayOfWeek.ordinal
+        override val month = today.month.ordinal
+        override val year = today.year
         override fun time() = "12:00"
-        override fun today() = LocalDate(2026, 10, 13)
+        override fun today() = today
     }
 
-    private fun lesson(day: Int, number: Int, date: String = "") = Lesson(
-        owner = "user", dayOfWeek = day, number = number, name = "$day-$number",
-        place = "", type = "", teacher = "", starts = "", ends = "", date = date
+    private class FakeSource(
+        private val name: String,
+        private val servesUser: (User) -> Boolean = { true },
+        private val timetable: (User?) -> List<List<Lesson>> = { listOf(listOf(lesson(0, 1, name = name))) },
+    ) : InstituteTimetableSource {
+        val loadedFor = mutableListOf<User?>()
+
+        override fun serves(user: User) = servesUser(user)
+
+        override suspend fun load(owner: String, user: User?, today: LocalDate): List<List<Lesson>> {
+            loadedFor += user
+            return timetable(user)
+        }
+    }
+
+    private class FakeUserProvider(private val cached: User?, private val fresh: User?) : UserProvider {
+        var refreshes = 0
+
+        override suspend fun user(refresh: Boolean): User? {
+            if (refresh) refreshes++
+            return if (refresh) fresh else cached
+        }
+    }
+
+    private companion object {
+        fun lesson(day: Int, number: Int, date: String = "", name: String = "$day-$number") = Lesson(
+            owner = "user", dayOfWeek = day, number = number, name = name,
+            place = "", type = "", teacher = "", starts = "", ends = "", date = date
+        )
+    }
+
+    private val tuesday = LocalDate(2026, 10, 13)
+
+    private val iseuFaculty = "Международный государственный экологический институт имени А.Д.Сахарова"
+    private val bsuStudent = User(username = "user", faculty = "Экономический факультет")
+    private val iseuStudent = User(username = "user", faculty = iseuFaculty, info = "1 курс, группа А61ИТ2")
+
+    private val bsuSource = FakeSource("bsu")
+    private val iseuSource = FakeSource("iseu", servesUser = { it.faculty == iseuFaculty })
+
+    private fun repository(
+        vararg lessons: Lesson,
+        today: LocalDate = tuesday,
+        users: UserProvider = FakeUserProvider(null, null),
+        username: String = "user",
+        instituteSources: List<InstituteTimetableSource> = listOf(iseuSource),
+    ) = TimetableRepository(
+        usernameProvider = object : UsernameProvider {
+            override val username = username
+        },
+        lessonsDao = FakeLessonsDao(lessons.toList()),
+        calendar = FakeCalendar(today),
+        userProvider = users,
+        bsuSource = bsuSource,
+        instituteSources = instituteSources,
     )
 
-    private fun repository(vararg lessons: Lesson) = TimetableRepository(
-        usernameProvider = object : UsernameProvider {
-            override val username = "user"
-        },
-        timetableApi = api,
-        lessonsDao = FakeLessonsDao(lessons.toList()),
-        iseuTimetableLoader = IseuTimetableLoader(iseuApi),
-        calendar = calendar,
-        currentUser = { null }
-    )
+    private suspend fun TimetableRepository.loadedFrom() = getFromWeb().single().single().name
+
+    @Test
+    fun `institute students get the timetable of the institute`() = runBlocking {
+        assertEquals("iseu", repository(users = FakeUserProvider(iseuStudent, null)).loadedFrom())
+        assertEquals(listOf<User?>(iseuStudent), iseuSource.loadedFor)
+        assertTrue(bsuSource.loadedFor.isEmpty())
+    }
+
+    @Test
+    fun `university students and unknown profiles get the timetable of the university`() = runBlocking {
+        assertEquals("bsu", repository(users = FakeUserProvider(bsuStudent, null)).loadedFrom())
+        assertEquals("bsu", repository(users = FakeUserProvider(null, null)).loadedFrom())
+        assertTrue(iseuSource.loadedFor.isEmpty())
+    }
+
+    @Test
+    fun `first institute serving the student wins`() = runBlocking {
+        val other = FakeSource("other", servesUser = { it.faculty == iseuFaculty })
+        val repository = repository(
+            users = FakeUserProvider(iseuStudent, null),
+            instituteSources = listOf(other, iseuSource)
+        )
+        assertEquals("other", repository.loadedFrom())
+    }
+
+    @Test
+    fun `outdated profile is refreshed when the group is not found`() = runBlocking {
+        val nextYear = iseuStudent.copy(info = "2 курс, группа А61ИТ2")
+        val source = FakeSource("iseu", servesUser = { it.faculty == iseuFaculty }, timetable = { user ->
+            if (user == iseuStudent) throw GroupNotFoundException()
+            listOf(listOf(lesson(0, 1, name = "iseu")))
+        })
+        val users = FakeUserProvider(cached = iseuStudent, fresh = nextYear)
+
+        assertEquals("iseu", repository(users = users, instituteSources = listOf(source)).loadedFrom())
+        assertEquals(1, users.refreshes)
+        assertEquals(listOf<User?>(iseuStudent, nextYear), source.loadedFor)
+    }
+
+    @Test
+    fun `student that left the institute gets the timetable of the university`() = runBlocking {
+        val source = FakeSource("iseu", servesUser = { it.faculty == iseuFaculty }, timetable = {
+            throw GroupNotFoundException()
+        })
+        val users = FakeUserProvider(cached = iseuStudent, fresh = bsuStudent)
+
+        assertEquals("bsu", repository(users = users, instituteSources = listOf(source)).loadedFrom())
+    }
+
+    @Test
+    fun `missing group is reported when the profile is up to date`() = runBlocking {
+        val source = FakeSource("iseu", servesUser = { it.faculty == iseuFaculty }, timetable = {
+            throw GroupNotFoundException()
+        })
+        val users = FakeUserProvider(cached = iseuStudent, fresh = iseuStudent)
+
+        assertFailsWith<GroupNotFoundException> {
+            repository(users = users, instituteSources = listOf(source)).getFromWeb()
+        }
+        assertEquals(1, source.loadedFor.size)
+    }
+
+    @Test
+    fun `other failures do not refresh the profile`() = runBlocking {
+        val source = FakeSource("iseu", servesUser = { it.faculty == iseuFaculty }, timetable = {
+            throw IOException("connection reset")
+        })
+        val users = FakeUserProvider(cached = iseuStudent, fresh = iseuStudent.copy(info = "2 курс"))
+
+        assertFailsWith<IOException> {
+            repository(users = users, instituteSources = listOf(source)).getFromWeb()
+        }
+        assertEquals(0, users.refreshes)
+    }
+
+    @Test
+    fun `timetable is not loaded without a username`() = runBlocking {
+        assertFailsWith<UsernameNotFoundException> {
+            repository(username = " ", users = FakeUserProvider(iseuStudent, null)).getFromWeb()
+        }
+        assertTrue(iseuSource.loadedFor.isEmpty())
+    }
 
     @Test
     fun `cached lessons stay on their days when some days are free`() = runBlocking {
@@ -80,19 +203,30 @@ class TimetableRepositoryTest {
 
     @Test
     fun `cached lessons of a past week are outdated`() = runBlocking {
-        assertTrue(repository(lesson(0, 1, "2026-10-05"), lesson(4, 1, "2026-10-09")).getFromCache().isEmpty())
+        assertTrue(
+            repository(lesson(0, 1, "2026-10-05"), lesson(4, 1, "2026-10-09")).getFromCache().isEmpty()
+        )
 
-        val cached = repository(lesson(0, 1, "2026-10-05"), lesson(1, 1, "2026-10-13"))
-            .getFromCache()
+        val cached = repository(lesson(0, 1, "2026-10-05"), lesson(1, 1, "2026-10-13")).getFromCache()
         assertEquals(6, cached.size)
         assertTrue(cached[0].isEmpty())
         assertEquals(listOf("1-1"), cached[1].map { it.name })
     }
 
     @Test
+    fun `on sunday the cached next week is shown`() = runBlocking {
+        val sunday = LocalDate(2026, 10, 18)
+        val cached = repository(
+            lesson(0, 1, "2026-10-12"), lesson(0, 1, "2026-10-19", name = "next"),
+            today = sunday
+        ).getFromCache()
+
+        assertEquals(listOf("next"), cached[0].map { it.name })
+    }
+
+    @Test
     fun `sunday is cached when it has lessons`() = runBlocking {
-        val cached = repository(lesson(0, 1, "2026-10-12"), lesson(6, 1, "2026-10-18"))
-            .getFromCache()
+        val cached = repository(lesson(0, 1, "2026-10-12"), lesson(6, 1, "2026-10-18")).getFromCache()
 
         assertEquals(7, cached.size)
         assertEquals(listOf("6-1"), cached[6].map { it.name })

@@ -7,24 +7,13 @@ import github.sushkpavel.studentbsuby.api.AspNetForm
 import github.sushkpavel.studentbsuby.data.models.Lesson
 import github.sushkpavel.studentbsuby.data.models.User
 import github.sushkpavel.studentbsuby.util.exceptions.IncorrectResponseException
-import kotlinx.datetime.DateTimeUnit
-import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.isoDayNumber
-import kotlinx.datetime.minus
-import kotlinx.datetime.plus
 
-/**
- * Student of МГЭИ им. А.Д. Сахарова as the profile of student.bsu.by describes them:
- * the faculty is the institute ("Учреждение образования «Международный государственный
- * экологический институт имени А.Д.Сахарова» БГУ"), the info is
- * "1 курс, группа А61ИТ2, форма обучения дневная, специальность: ... ФМОС".
- */
 data class IseuStudent(
     val group: String,
     val course: Int?,
     val studyForm: String?,
-    /** Upper case words of the profile info, e.g. the faculty abbreviation ("ФМОС"). */
     val abbreviations: Set<String>,
 ) {
     companion object {
@@ -38,7 +27,6 @@ data class IseuStudent(
         private val studyForm = Regex("""форма\s+обучения[\s:]+([а-яё]+)""", RegexOption.IGNORE_CASE)
         private val separators = Regex("""[\s,.;:()«»"]+""")
 
-        /** Null when the student does not study at МГЭИ. */
         fun from(user: User): IseuStudent? {
             if (institute.none { user.faculty.contains(it, ignoreCase = true) })
                 return null
@@ -55,25 +43,8 @@ data class IseuStudent(
     }
 }
 
-/** Monday of the week that is shown on [today]. On Sunday the next week is shown. */
-fun iseuWeekStart(today: LocalDate): LocalDate {
-    val monday = weekStart(today)
-    return if (today.dayOfWeek == DayOfWeek.SUNDAY)
-        monday.plus(7, DateTimeUnit.DAY) else monday
-}
-
-/** Monday of the week of [Lesson.date], null for undated lessons. */
-fun Lesson.weekStart(): LocalDate? =
-    date.takeIf(String::isNotEmpty)
-        ?.let { runCatching { LocalDate.parse(it) }.getOrNull() }
-        ?.let(::weekStart)
-
-private fun weekStart(date: LocalDate): LocalDate =
-    date.minus(date.dayOfWeek.isoDayNumber - 1, DateTimeUnit.DAY)
-
 private val iseuDate = Regex("""(\d{1,2})\.(\d{1,2})\.(\d{4})""")
 
-/** "12.10.2026" (also "12.10.2026 0:00:00") */
 internal fun parseIseuDate(text: String): LocalDate? =
     iseuDate.find(text)?.destructured?.let { (day, month, year) ->
         runCatching { LocalDate(year.toInt(), month.toInt(), day.toInt()) }.getOrNull()
@@ -84,29 +55,22 @@ private val latinLookalikes = mapOf(
     'M' to 'М', 'O' to 'О', 'P' to 'Р', 'T' to 'Т', 'X' to 'Х', 'Y' to 'У'
 )
 
-/** Group names are typed by hand: the case, spaces and latin lookalikes may differ. */
 internal fun normalizeGroup(name: String): String =
     name.uppercase()
         .filterNot { it.isWhitespace() }
         .map { latinLookalikes[it] ?: it }
         .joinToString("")
 
-/**
- * Form state of the rsp.iseu.by timetable page: hidden ASP.NET fields, the lists
- * and the submit button.
- */
 internal class IseuTimetablePage private constructor(private val document: Document) {
 
     class Option(
         val value: String,
         val text: String,
         val selected: Boolean,
-        val isCurrentWeek: Boolean,
     )
 
     val form: AspNetForm = AspNetForm.parse(document)
 
-    /** name to value of the "Показать" button. */
     val submit: Pair<String, String>? = document.selectFirst("input[type=submit][name]")
         ?.let { it.attr("name") to it.attr("value") }
 
@@ -116,15 +80,12 @@ internal class IseuTimetablePage private constructor(private val document: Docum
                 value = it.attr("value"),
                 text = it.text().clean(),
                 selected = it.hasAttr("selected"),
-                isCurrentWeek = it.hasClass("current-week-option")
             )
         }
 
-    /** The option the browser posts: the selected one or the first one. */
     fun selected(list: String): Option? =
         options(list).let { options -> options.firstOrNull { it.selected } ?: options.firstOrNull() }
 
-    /** Values of all lists as the browser posts them. */
     fun lists(): Map<String, String> =
         document.select("select[name]").associate { select ->
             val name = select.attr("name")
@@ -140,31 +101,20 @@ internal class IseuTimetablePage private constructor(private val document: Docum
 
         fun parse(html: String): IseuTimetablePage {
             val page = IseuTimetablePage(Ksoup.parse(html))
-            if (!page.form.isValid || page.options(GROUP).isEmpty() && page.options(FACULTY).isEmpty())
+            if (!page.form.isValid || page.options(FACULTY).isEmpty() || page.options(WEEK).isEmpty())
                 throw IncorrectResponseException()
             return page
         }
     }
 }
 
-/**
- * Parser of the timetable table (`table#TT`) of rsp.iseu.by. The table lists a week:
- * a day starts with a row whose first cell (`cell-date`, rowspan) holds the weekday and
- * the date, every row is one lesson:
- *
- * `cell-time` "08:30-09:50", `cell-subgroup`, `cell-discipline` "лек. Физика" with an
- * optional `span.topic` ("2п/гр", "Кураторский час"), `cell-staff` "доц. Иванов И.И.",
- * `cell-auditory` "ауд. 103, К2".
- *
- * Parallel lessons (subgroups, foreign language groups) are rows with the same time; they
- * are merged into one lesson like the parallel lessons of student.bsu.by.
- */
 object IseuTimetableParser {
 
     private const val SEPARATOR = " \\ "
 
-    // "лек. ", "практ. зан. ", "лаб. ": lower case abbreviations before the discipline
     private val lessonType = Regex("""^((?:[а-яё]+\.\s*)+)(.*)$""")
+
+    private val time = Regex("""(\d{1,2})[:.](\d{2})\s*[-–—]\s*(\d{1,2})[:.](\d{2})""")
 
     private class Row(
         val date: LocalDate,
@@ -176,31 +126,34 @@ object IseuTimetableParser {
         val place: String,
     )
 
-    /**
-     * @param group the timetable must belong to: the server answers with the timetable
-     * of the group it ended up with, which differs from the requested one when the
-     * postback went wrong.
-     */
-    fun parse(html: String, owner: String, group: String? = null): List<List<Lesson>> {
-        val document = Ksoup.parse(html)
-        val table = document.getElementById("TT") ?: throw IncorrectResponseException()
+    fun parse(html: String, owner: String, group: String, week: LocalDate): List<List<Lesson>> {
+        val table = Ksoup.parse(html).getElementById("TT") ?: throw IncorrectResponseException()
 
-        val caption = table.selectFirst("caption")?.text().orEmpty()
-        if (group != null && caption.isNotBlank() &&
-            normalizeGroup(group) !in normalizeGroup(caption)
-        ) throw IncorrectResponseException()
+        val caption = table.selectFirst("caption")?.text() ?: throw IncorrectResponseException()
+        if (normalizeGroup(group) !in normalizeGroup(caption) || parseIseuDate(caption) != week)
+            throw IncorrectResponseException()
+
+        val tableRows = table.select("tr")
+        if (tableRows.isEmpty())
+            return emptyMap<Int, List<Lesson>>().toWeek()
 
         val rows = mutableListOf<Row>()
         var date: LocalDate? = null
-        for (tr in table.select("tr")) {
+        var days = 0
+        var times = 0
+        for (tr in tableRows) {
             tr.selectFirst("td.cell-date")?.let { cell ->
                 date = parseIseuDate(cell.selectFirst(".date")?.text() ?: cell.text())
+                if (date != null) days++
             }
             val time = tr.selectFirst("td.cell-time") ?: continue
+            times++
             rows += parseRow(tr, time, date ?: continue) ?: continue
         }
+        if (days == 0 || times > 0 && rows.isEmpty())
+            throw IncorrectResponseException()
 
-        val lessons = rows
+        return rows
             .groupBy { Triple(it.date, it.starts, it.ends) }
             .map { (key, parallel) ->
                 val (day, starts, ends) = key
@@ -221,16 +174,12 @@ object IseuTimetableParser {
             .mapValues { (_, day) ->
                 day.sortedBy { it.starts }.mapIndexed { idx, it -> it.copy(number = idx + 1) }
             }
-
-        val days = if (lessons.keys.any { it > 5 }) 7 else 6
-        return List(days) { lessons[it].orEmpty() }
+            .toWeek()
     }
 
-    private fun parseRow(tr: Element, time: Element, date: LocalDate): Row? {
-        val (starts, ends) = time.text().clean().split('-', '–')
-            .map { it.trim().padStart(5, '0') }
-            .takeIf { it.size == 2 }
-            ?: return null
+    private fun parseRow(tr: Element, cell: Element, date: LocalDate): Row? {
+        val (startHour, startMinute, endHour, endMinute) =
+            time.find(cell.text())?.destructured ?: return null
 
         val discipline = tr.selectFirst("td.cell-discipline")
         val topic = discipline?.select(".topic")?.text()?.clean().orEmpty()
@@ -253,8 +202,8 @@ object IseuTimetableParser {
 
         return Row(
             date = date,
-            starts = starts,
-            ends = ends,
+            starts = "${startHour.padStart(2, '0')}:$startMinute",
+            ends = "${endHour.padStart(2, '0')}:$endMinute",
             name = name,
             type = type,
             teacher = tr.selectFirst("td.cell-staff")?.text()?.clean().orEmpty(),

@@ -1,7 +1,10 @@
 package github.sushkpavel.studentbsuby.di
 
-import github.sushkpavel.studentbsuby.repo.IseuTimetableLoader
+import github.sushkpavel.studentbsuby.repo.BsuTimetableSource
+import github.sushkpavel.studentbsuby.repo.DataSource
+import github.sushkpavel.studentbsuby.repo.IseuTimetableSource
 import github.sushkpavel.studentbsuby.repo.TimetableRepository
+import github.sushkpavel.studentbsuby.repo.UserProvider
 import github.sushkpavel.studentbsuby.repo.UserRepository
 import github.sushkpavel.studentbsuby.ui.screens.drawer.timetable.Timetable
 import github.sushkpavel.studentbsuby.ui.screens.drawer.timetable.TimetableEventHandlerImpl
@@ -9,22 +12,29 @@ import github.sushkpavel.studentbsuby.ui.screens.drawer.timetable.TimetableViewM
 import github.sushkpavel.studentbsuby.util.DataState
 import github.sushkpavel.studentbsuby.util.communication.StateFlowCommunication
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.lastOrNull
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 val timetableModule = module {
 
-    factory { IseuTimetableLoader(get()) }
+    factory { BsuTimetableSource(get()) }
+
+    factory { IseuTimetableSource(get()) }
 
     factory {
         val userRepository = get<UserRepository>()
         TimetableRepository(
             usernameProvider = get(),
-            timetableApi = get(),
             lessonsDao = get(),
-            iseuTimetableLoader = get(),
             calendar = get(),
-            currentUser = { userRepository.get().firstOrNull() }
+            userProvider = UserProvider { refresh ->
+                val cached = if (refresh) null
+                else userRepository.get(DataSource.Local).firstOrNull()
+                cached ?: userRepository.get(DataSource.Remote).lastOrNull()
+            },
+            bsuSource = get<BsuTimetableSource>(),
+            instituteSources = listOf(get<IseuTimetableSource>()),
         )
     }
 

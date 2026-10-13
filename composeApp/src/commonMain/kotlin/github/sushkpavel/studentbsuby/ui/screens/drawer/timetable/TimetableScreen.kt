@@ -64,7 +64,6 @@ fun TimetableScreen(
 
     val timetable by timetableViewModel.timetableCommunication.collectAsState()
 
-    // Sunday is shown only when there are lessons on it
     val pagerState = rememberPagerState(
         initialPage = timetableViewModel.dayOfWeek.takeIf { it in 0..5 } ?: 0
     ) { (timetable as? DataState.Success)?.value?.size ?: 6 }

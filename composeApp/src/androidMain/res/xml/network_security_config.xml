@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <network-security-config>
-    <!-- Timetable of МГЭИ им. А.Д. Сахарова: the host has no valid https certificate. -->
     <domain-config cleartextTrafficPermitted="true">
         <domain includeSubdomains="false">rsp.iseu.by</domain>
     </domain-config>

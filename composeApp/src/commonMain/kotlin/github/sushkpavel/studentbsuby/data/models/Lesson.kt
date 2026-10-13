@@ -18,10 +18,6 @@ data class Lesson(
     val teacher : String,
     val starts : String,
     val ends : String,
-    /**
-     * ISO date (yyyy-MM-dd) of a lesson from a timetable published per week
-     * (rsp.iseu.by). Empty for the weekly timetable of student.bsu.by.
-     */
     @ColumnInfo(defaultValue = "") val date : String = ""
 ){
     override fun equals(other: Any?): Boolean {
