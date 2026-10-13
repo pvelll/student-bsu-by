@@ -9,7 +9,7 @@ import androidx.room.PrimaryKey
 data class Lesson(
     @PrimaryKey(autoGenerate = true) val id : Int = 0,
     val owner : String,
-    @IntRange(from = 0, to = 5)
+    @IntRange(from = 0, to = 6)
     @ColumnInfo(name = "day_of_week") val dayOfWeek: Int,
     val number : Int,
     val name : String,
@@ -17,7 +17,12 @@ data class Lesson(
     val type : String,
     val teacher : String,
     val starts : String,
-    val ends : String
+    val ends : String,
+    /**
+     * ISO date (yyyy-MM-dd) of a lesson from a timetable published per week
+     * (rsp.iseu.by). Empty for the weekly timetable of student.bsu.by.
+     */
+    @ColumnInfo(defaultValue = "") val date : String = ""
 ){
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -34,6 +39,7 @@ data class Lesson(
         if (teacher != other.teacher) return false
         if (starts != other.starts) return false
         if (ends != other.ends) return false
+        if (date != other.date) return false
 
         return true
     }
@@ -48,6 +54,7 @@ data class Lesson(
         result = 31 * result + teacher.hashCode()
         result = 31 * result + starts.hashCode()
         result = 31 * result + ends.hashCode()
+        result = 31 * result + date.hashCode()
         return result
     }
 }

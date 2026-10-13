@@ -1,0 +1,303 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--[if lt IE 7 ]> <html class="ie6" xmlns="http://www.w3.org/1999/xhtml"> <![endif]-->
+<!--[if IE 7 ]>    <html class="ie7" xmlns="http://www.w3.org/1999/xhtml"> <![endif]-->
+<!--[if IE 8 ]>    <html class="ie8" xmlns="http://www.w3.org/1999/xhtml"> <![endif]-->
+<!--[if IE 9 ]>    <html class="ie9" xmlns="http://www.w3.org/1999/xhtml"> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--> <html class="" xmlns="http://www.w3.org/1999/xhtml"> <!--<![endif]-->
+<head><title>
+
+</title>
+    <!--[if lt IE 8 ]><script type="text/javascript" src="../Scripts/jquery-1.4.1.min.js"></script><![endif]-->
+    <!--[if (gt IE 9)|!(IE)]><!-->
+        <script src="../Scripts/jquery-2.1.1.min.js" type="text/javascript"></script>
+        <script src="../Scripts/jquery-ui.min-1.11.1.js" type="text/javascript"></script>
+    <!--<![endif]-->
+    <link href="../Scripts/jqPlugins/chosen/chosen.min.css" rel="stylesheet" type="text/css" />
+    <script src="../Scripts/chosen.jquery.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        $(function () {
+            $('#iframeheight').val(Math.max($('html').height(), 400));
+            var oldIE;
+            if ($('html').is('.ie6, .ie7, .ie8')) {
+                oldIE = true;
+            }
+
+            if (oldIE) {
+                $('.show').addClass('hidden');
+            } else {
+                $('select:not(.hidden)').chosen({
+                    no_results_text: "Translated No results matched",
+                    placeholder_text_single: "Выберите элемент"
+                });
+                $('#ShowTT').addClass('hidden');
+                $('.show').click(function () {
+                    $('#ShowTT').click();
+                });
+                $('.chosen-default span').html('Нет данных для выборки');
+                $('div.chosen-search input').keyup(function () {
+                    var parent = $(this).parent().parent().parent().attr('id');
+                    console.log(parent);
+                    var spanVal = $('#' + parent + ' ul.chosen-results li.no-results span').html();
+                    $('ul.chosen-results li.no-results').html('По запросу "<span>' + spanVal + '</span>" ничего не найдено.');
+                });
+            }
+        });
+    </script>
+    <link href="../Styles/mobile-promotion.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="../Scripts/mobile-promotion.js"></script>
+    <style type="text/css">
+        #ddlWeek_chosen, #ddlCourse_chosen { width:100px !important; }
+        #ddlFac_chosen div.chosen-search { width:98%; }
+        #lMessage { width:100%; }
+        #TT { border-collapse:collapse; width:100%; margin-top:20px; }
+    </style>
+    <link href="../Styles/styles.css" rel="stylesheet" type="text/css" /><link href="../Styles/StudySchedule.css" rel="stylesheet" type="text/css" />
+    <style>
+        .cell-empty,.cell-time,.cell-subgroup,.cell-discipline,.cell-staff,.cell-auditory
+        {
+            padding-left:4px;
+            border-left:1px solid Gray;
+        }
+        .topic
+        {
+            display: inherit;
+            border-top: 1px solid gray;
+        }
+    </style>
+</head>
+<body>
+    <div style="position:relative;">
+        <h2>Расписание занятий для студента</h2>
+    </div><br />
+    
+    <br />&nbsp&nbsp&nbsp<br />
+    <form method="post" action="./umu.aspx" id="form1">
+<div class="aspNetHidden">
+<input type="hidden" name="__EVENTTARGET" id="__EVENTTARGET" value="" />
+<input type="hidden" name="__EVENTARGUMENT" id="__EVENTARGUMENT" value="" />
+<input type="hidden" name="__LASTFOCUS" id="__LASTFOCUS" value="" />
+<input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="/wEPDwULLTEyOTQ4MzI4MDAPZBYEAgEPDxYCHgdWaXNpYmxlaGRkAgIPZBYaAgMPEGRkFgFmZAIHDxAPFgYeCENzc0NsYXNzZR4LXyFEYXRhQm91bmRnHgRfIVNCAgJkEBUDowLQpNCw0LrRg9C70YzRgtC10YIg0LzQvtC90LjRgtC+0YDQuNC90LPQsCDQvtC60YDRg9C20LDRjtGJ0LXQuSDRgdGA0LXQtNGLICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICCtAtCk0LDQutGD0LvRjNGC0LXRgiDQv9C+0LLRi9GI0LXQvdC40Y8g0LrQstCw0LvQuNGE0LjQutCw0YbQuNC4INC4INC/0LXRgNC10L/QvtC00LPQvtGC0L7QstC60LggICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICCeAtCk0LDQutGD0LvRjNGC0LXRgiDRjdC60L7Qu9C+0LPQuNGH0LXRgdC60L7QuSDQvNC10LTQuNGG0LjQvdGLICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAVAwEyATMBNBQrAwNnZ2dkZAIJDw9kDxAWAmYCARYCFgIeDlBhcmFtZXRlclZhbHVlBQExFgIfBGQWAmYCBGRkAg0PEA8WAh8CZ2QQFQJw0LTQvdC10LLQvdCw0Y8g0YTQvtGA0LzQsCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHDQt9Cw0L7Rh9C90LDRjyDRhNC+0YDQvNCwICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgFQIBMgEzFCsDAmdnZGQCDw8PZA8QFgFmFgEWAh8EBQExFgFmZGQCEw8QDxYCHwJnZBAVBQoxINC60YPRgNGBCjIg0LrRg9GA0YEKMyDQutGD0YDRgQo0INC60YPRgNGBCjUg0LrRg9GA0YEVBQExATIBMwE0ATUUKwMFZ2dnZ2dkZAIVDw9kDxAWA2YCAQICFgMWAh8EBQExFgIfBAUBMhYCHwQFATIWA2ZmZmRkAhkPEA8WAh8CZ2QQFQYJ0JA1MdCY0KIxCdCQNTHQmNCiMgnQkDUx0JjQojMJ0JA1MdCY0KI0CdCQNTHQnNCkMQnQkDUx0K/QkTEVBgMzMzEDMzMyAzMzMwMzMzQDMzMwAzMyORQrAwZnZ2dnZ2dkZAIbDw9kDxAWB2YCAQICAgMCBAIFAgYWBxYCHwQFATEWAh8EBQEyFgIfBAUBMhYCHwQFATIWAh8EZBYCHwRkFgIfBGQWB2ZmZmYCAwIDAgNkZAIfDxAPFgIfAmdkEBV3CjE4LjAxLjIwMjcKMTEuMDEuMjAyNwowNC4wMS4yMDI3CjI4LjEyLjIwMjYKMjEuMTIuMjAyNgoxNC4xMi4yMDI2CjA3LjEyLjIwMjYKMzAuMTEuMjAyNgoyMy4xMS4yMDI2CjE2LjExLjIwMjYKMDkuMTEuMjAyNgowMi4xMS4yMDI2CjI2LjEwLjIwMjYKMTkuMTAuMjAyNgoxMi4xMC4yMDI2CjA1LjEwLjIwMjYKMjguMDkuMjAyNgoyMS4wOS4yMDI2CjE0LjA5LjIwMjYKMDcuMDkuMjAyNgozMS4wOC4yMDI2CjI0LjA4LjIwMjYKMTcuMDguMjAyNgoxMC4wOC4yMDI2CjAzLjA4LjIwMjYKMjcuMDcuMjAyNgoyMC4wNy4yMDI2CjEzLjA3LjIwMjYKMDYuMDcuMjAyNgoyOS4wNi4yMDI2CjIyLjA2LjIwMjYKMTUuMDYuMjAyNgowOC4wNi4yMDI2CjAxLjA2LjIwMjYKMjUuMDUuMjAyNgoxOC4wNS4yMDI2CjExLjA1LjIwMjYKMDQuMDUuMjAyNgoyNy4wNC4yMDI2CjIwLjA0LjIwMjYKMTMuMDQuMjAyNgowNi4wNC4yMDI2CjMwLjAzLjIwMjYKMjMuMDMuMjAyNgoxNi4wMy4yMDI2CjA5LjAzLjIwMjYKMDIuMDMuMjAyNgoyMy4wMi4yMDI2CjE2LjAyLjIwMjYKMDkuMDIuMjAyNgowMi4wMi4yMDI2CjI2LjAxLjIwMjYKMTkuMDEuMjAyNgoxMi4wMS4yMDI2CjA1LjAxLjIwMjYKMjkuMTIuMjAyNQoyMi4xMi4yMDI1CjE1LjEyLjIwMjUKMDguMTIuMjAyNQowMS4xMi4yMDI1CjI0LjExLjIwMjUKMTcuMTEuMjAyNQoxMC4xMS4yMDI1CjAzLjExLjIwMjUKMjcuMTAuMjAyNQoyMC4xMC4yMDI1CjEzLjEwLjIwMjUKMDYuMTAuMjAyNQoyOS4wOS4yMDI1CjIyLjA5LjIwMjUKMTUuMDkuMjAyNQowOC4wOS4yMDI1CjAxLjA5LjIwMjUKMTQuMDcuMjAyNQowNy4wNy4yMDI1CjMwLjA2LjIwMjUKMjMuMDYuMjAyNQoxNi4wNi4yMDI1CjA5LjA2LjIwMjUKMDIuMDYuMjAyNQoyNi4wNS4yMDI1CjE5LjA1LjIwMjUKMTIuMDUuMjAyNQowNS4wNS4yMDI1CjI4LjA0LjIwMjUKMjEuMDQuMjAyNQoxNC4wNC4yMDI1CjA3LjA0LjIwMjUKMzEuMDMuMjAyNQoyNC4wMy4yMDI1CjE3LjAzLjIwMjUKMTAuMDMuMjAyNQowMy4wMy4yMDI1CjI0LjAyLjIwMjUKMTcuMDIuMjAyNQoxMC4wMi4yMDI1CjAzLjAyLjIwMjUKMjcuMDEuMjAyNQoyMC4wMS4yMDI1CjEzLjAxLjIwMjUKMDYuMDEuMjAyNQozMC4xMi4yMDI0CjIzLjEyLjIwMjQKMTYuMTIuMjAyNAowOS4xMi4yMDI0CjAyLjEyLjIwMjQKMjUuMTEuMjAyNAoxOC4xMS4yMDI0CjExLjExLjIwMjQKMDQuMTEuMjAyNAoyOC4xMC4yMDI0CjIxLjEwLjIwMjQKMTQuMTAuMjAyNAowNy4xMC4yMDI0CjMwLjA5LjIwMjQKMjMuMDkuMjAyNAoxNi4wOS4yMDI0CjA5LjA5LjIwMjQKMDIuMDkuMjAyNBV3EjE4LjAxLjIwMjcgMDowMDowMBIxMS4wMS4yMDI3IDA6MDA6MDASMDQuMDEuMjAyNyAwOjAwOjAwEjI4LjEyLjIwMjYgMDowMDowMBIyMS4xMi4yMDI2IDA6MDA6MDASMTQuMTIuMjAyNiAwOjAwOjAwEjA3LjEyLjIwMjYgMDowMDowMBIzMC4xMS4yMDI2IDA6MDA6MDASMjMuMTEuMjAyNiAwOjAwOjAwEjE2LjExLjIwMjYgMDowMDowMBIwOS4xMS4yMDI2IDA6MDA6MDASMDIuMTEuMjAyNiAwOjAwOjAwEjI2LjEwLjIwMjYgMDowMDowMBIxOS4xMC4yMDI2IDA6MDA6MDASMTIuMTAuMjAyNiAwOjAwOjAwEjA1LjEwLjIwMjYgMDowMDowMBIyOC4wOS4yMDI2IDA6MDA6MDASMjEuMDkuMjAyNiAwOjAwOjAwEjE0LjA5LjIwMjYgMDowMDowMBIwNy4wOS4yMDI2IDA6MDA6MDASMzEuMDguMjAyNiAwOjAwOjAwEjI0LjA4LjIwMjYgMDowMDowMBIxNy4wOC4yMDI2IDA6MDA6MDASMTAuMDguMjAyNiAwOjAwOjAwEjAzLjA4LjIwMjYgMDowMDowMBIyNy4wNy4yMDI2IDA6MDA6MDASMjAuMDcuMjAyNiAwOjAwOjAwEjEzLjA3LjIwMjYgMDowMDowMBIwNi4wNy4yMDI2IDA6MDA6MDASMjkuMDYuMjAyNiAwOjAwOjAwEjIyLjA2LjIwMjYgMDowMDowMBIxNS4wNi4yMDI2IDA6MDA6MDASMDguMDYuMjAyNiAwOjAwOjAwEjAxLjA2LjIwMjYgMDowMDowMBIyNS4wNS4yMDI2IDA6MDA6MDASMTguMDUuMjAyNiAwOjAwOjAwEjExLjA1LjIwMjYgMDowMDowMBIwNC4wNS4yMDI2IDA6MDA6MDASMjcuMDQuMjAyNiAwOjAwOjAwEjIwLjA0LjIwMjYgMDowMDowMBIxMy4wNC4yMDI2IDA6MDA6MDASMDYuMDQuMjAyNiAwOjAwOjAwEjMwLjAzLjIwMjYgMDowMDowMBIyMy4wMy4yMDI2IDA6MDA6MDASMTYuMDMuMjAyNiAwOjAwOjAwEjA5LjAzLjIwMjYgMDowMDowMBIwMi4wMy4yMDI2IDA6MDA6MDASMjMuMDIuMjAyNiAwOjAwOjAwEjE2LjAyLjIwMjYgMDowMDowMBIwOS4wMi4yMDI2IDA6MDA6MDASMDIuMDIuMjAyNiAwOjAwOjAwEjI2LjAxLjIwMjYgMDowMDowMBIxOS4wMS4yMDI2IDA6MDA6MDASMTIuMDEuMjAyNiAwOjAwOjAwEjA1LjAxLjIwMjYgMDowMDowMBIyOS4xMi4yMDI1IDA6MDA6MDASMjIuMTIuMjAyNSAwOjAwOjAwEjE1LjEyLjIwMjUgMDowMDowMBIwOC4xMi4yMDI1IDA6MDA6MDASMDEuMTIuMjAyNSAwOjAwOjAwEjI0LjExLjIwMjUgMDowMDowMBIxNy4xMS4yMDI1IDA6MDA6MDASMTAuMTEuMjAyNSAwOjAwOjAwEjAzLjExLjIwMjUgMDowMDowMBIyNy4xMC4yMDI1IDA6MDA6MDASMjAuMTAuMjAyNSAwOjAwOjAwEjEzLjEwLjIwMjUgMDowMDowMBIwNi4xMC4yMDI1IDA6MDA6MDASMjkuMDkuMjAyNSAwOjAwOjAwEjIyLjA5LjIwMjUgMDowMDowMBIxNS4wOS4yMDI1IDA6MDA6MDASMDguMDkuMjAyNSAwOjAwOjAwEjAxLjA5LjIwMjUgMDowMDowMBIxNC4wNy4yMDI1IDA6MDA6MDASMDcuMDcuMjAyNSAwOjAwOjAwEjMwLjA2LjIwMjUgMDowMDowMBIyMy4wNi4yMDI1IDA6MDA6MDASMTYuMDYuMjAyNSAwOjAwOjAwEjA5LjA2LjIwMjUgMDowMDowMBIwMi4wNi4yMDI1IDA6MDA6MDASMjYuMDUuMjAyNSAwOjAwOjAwEjE5LjA1LjIwMjUgMDowMDowMBIxMi4wNS4yMDI1IDA6MDA6MDASMDUuMDUuMjAyNSAwOjAwOjAwEjI4LjA0LjIwMjUgMDowMDowMBIyMS4wNC4yMDI1IDA6MDA6MDASMTQuMDQuMjAyNSAwOjAwOjAwEjA3LjA0LjIwMjUgMDowMDowMBIzMS4wMy4yMDI1IDA6MDA6MDASMjQuMDMuMjAyNSAwOjAwOjAwEjE3LjAzLjIwMjUgMDowMDowMBIxMC4wMy4yMDI1IDA6MDA6MDASMDMuMDMuMjAyNSAwOjAwOjAwEjI0LjAyLjIwMjUgMDowMDowMBIxNy4wMi4yMDI1IDA6MDA6MDASMTAuMDIuMjAyNSAwOjAwOjAwEjAzLjAyLjIwMjUgMDowMDowMBIyNy4wMS4yMDI1IDA6MDA6MDASMjAuMDEuMjAyNSAwOjAwOjAwEjEzLjAxLjIwMjUgMDowMDowMBIwNi4wMS4yMDI1IDA6MDA6MDASMzAuMTIuMjAyNCAwOjAwOjAwEjIzLjEyLjIwMjQgMDowMDowMBIxNi4xMi4yMDI0IDA6MDA6MDASMDkuMTIuMjAyNCAwOjAwOjAwEjAyLjEyLjIwMjQgMDowMDowMBIyNS4xMS4yMDI0IDA6MDA6MDASMTguMTEuMjAyNCAwOjAwOjAwEjExLjExLjIwMjQgMDowMDowMBIwNC4xMS4yMDI0IDA6MDA6MDASMjguMTAuMjAyNCAwOjAwOjAwEjIxLjEwLjIwMjQgMDowMDowMBIxNC4xMC4yMDI0IDA6MDA6MDASMDcuMTAuMjAyNCAwOjAwOjAwEjMwLjA5LjIwMjQgMDowMDowMBIyMy4wOS4yMDI0IDA6MDA6MDASMTYuMDkuMjAyNCAwOjAwOjAwEjA5LjA5LjIwMjQgMDowMDowMBIwMi4wOS4yMDI0IDA6MDA6MDAUKwN3Z2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dkZAIlDw8WAh4LTmF2aWdhdGVVcmwFS1ByaW50UGFnZS5hc3B4P2FyZzA9MzY5JmFyZzE9MiZhcmcyPTImYXJnMz0yJmFyZzQ9MSZkYXRlPTEyLjEwLjIwMjYgMDowMDowMGRkAicPDxYGHwFlHwMCAh4EVGV4dGVkZAIpDw8WAh4HQ2FwdGlvbmVkZGQOjAy5TDGpQ7KFDEh0Jls34G4YJQ==" />
+</div>
+
+<script type="text/javascript">
+//<![CDATA[
+var theForm = document.forms['form1'];
+if (!theForm) {
+    theForm = document.form1;
+}
+function __doPostBack(eventTarget, eventArgument) {
+    if (!theForm.onsubmit || (theForm.onsubmit() != false)) {
+        theForm.__EVENTTARGET.value = eventTarget;
+        theForm.__EVENTARGUMENT.value = eventArgument;
+        theForm.submit();
+    }
+}
+//]]>
+</script>
+
+
+<div class="aspNetHidden">
+
+	<input type="hidden" name="__VIEWSTATEGENERATOR" id="__VIEWSTATEGENERATOR" value="4C55420B" />
+	<input type="hidden" name="__EVENTVALIDATION" id="__EVENTVALIDATION" value="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" />
+</div>
+    <div class="filter">
+        <div class="sType">
+            
+            
+        </div>
+        <div class="faculty">
+            
+            <select name="ddlFac" onchange="javascript:setTimeout(&#39;__doPostBack(\&#39;ddlFac\&#39;,\&#39;\&#39;)&#39;, 0)" id="ddlFac">
+	<option selected="selected" value="2">Факультет мониторинга окружающей среды                                                                                                                                                                                                                          </option>
+	<option value="3">Факультет повышения квалификации и переподготовки                                                                                                                                                                                                               </option>
+	<option value="4">Факультет экологической медицины                                                                                                                                                                                                                                </option>
+
+</select>
+            
+        </div>
+        <div class="department">
+            
+            <select name="ddlDep" onchange="javascript:setTimeout(&#39;__doPostBack(\&#39;ddlDep\&#39;,\&#39;\&#39;)&#39;, 0)" id="ddlDep">
+	<option selected="selected" value="2">дневная форма                                                                                       </option>
+	<option value="3">заочная форма                                                                                       </option>
+
+</select>
+            
+        </div>
+        <div class="course">
+            
+            <select name="ddlCourse" onchange="javascript:setTimeout(&#39;__doPostBack(\&#39;ddlCourse\&#39;,\&#39;\&#39;)&#39;, 0)" id="ddlCourse">
+	<option value="1">1 курс</option>
+	<option selected="selected" value="2">2 курс</option>
+	<option value="3">3 курс</option>
+	<option value="4">4 курс</option>
+	<option value="5">5 курс</option>
+
+</select>
+            
+        </div>
+        <div class="groupLB">
+            
+            <select name="ddlGroup" onchange="javascript:setTimeout(&#39;__doPostBack(\&#39;ddlGroup\&#39;,\&#39;\&#39;)&#39;, 0)" id="ddlGroup" style="width:110px;">
+	<option value="331">А51ИТ1</option>
+	<option value="332">А51ИТ2</option>
+	<option value="333">А51ИТ3</option>
+	<option value="334">А51ИТ4</option>
+	<option value="330">А51МФ1</option>
+	<option value="329">А51ЯБ1</option>
+
+</select>
+            
+        </div>
+        <div class="week">
+            
+            <select name="ddlWeek" onchange="javascript:setTimeout(&#39;__doPostBack(\&#39;ddlWeek\&#39;,\&#39;\&#39;)&#39;, 0)" id="ddlWeek">
+	<option value="18.01.2027 0:00:00">18.01.2027</option>
+	<option value="11.01.2027 0:00:00">11.01.2027</option>
+	<option value="04.01.2027 0:00:00">04.01.2027</option>
+	<option value="28.12.2026 0:00:00">28.12.2026</option>
+	<option value="21.12.2026 0:00:00">21.12.2026</option>
+	<option value="14.12.2026 0:00:00">14.12.2026</option>
+	<option value="07.12.2026 0:00:00">07.12.2026</option>
+	<option value="30.11.2026 0:00:00">30.11.2026</option>
+	<option value="23.11.2026 0:00:00">23.11.2026</option>
+	<option value="16.11.2026 0:00:00">16.11.2026</option>
+	<option value="09.11.2026 0:00:00">09.11.2026</option>
+	<option value="02.11.2026 0:00:00">02.11.2026</option>
+	<option value="26.10.2026 0:00:00">26.10.2026</option>
+	<option value="19.10.2026 0:00:00">19.10.2026</option>
+	<option selected="selected" value="12.10.2026 0:00:00" class="current-week-option">12.10.2026</option>
+	<option value="05.10.2026 0:00:00">05.10.2026</option>
+	<option value="28.09.2026 0:00:00">28.09.2026</option>
+	<option value="21.09.2026 0:00:00">21.09.2026</option>
+	<option value="14.09.2026 0:00:00">14.09.2026</option>
+	<option value="07.09.2026 0:00:00">07.09.2026</option>
+	<option value="31.08.2026 0:00:00">31.08.2026</option>
+	<option value="24.08.2026 0:00:00">24.08.2026</option>
+	<option value="17.08.2026 0:00:00">17.08.2026</option>
+	<option value="10.08.2026 0:00:00">10.08.2026</option>
+	<option value="03.08.2026 0:00:00">03.08.2026</option>
+	<option value="27.07.2026 0:00:00">27.07.2026</option>
+	<option value="20.07.2026 0:00:00">20.07.2026</option>
+	<option value="13.07.2026 0:00:00">13.07.2026</option>
+	<option value="06.07.2026 0:00:00">06.07.2026</option>
+	<option value="29.06.2026 0:00:00">29.06.2026</option>
+	<option value="22.06.2026 0:00:00">22.06.2026</option>
+	<option value="15.06.2026 0:00:00">15.06.2026</option>
+	<option value="08.06.2026 0:00:00">08.06.2026</option>
+	<option value="01.06.2026 0:00:00">01.06.2026</option>
+	<option value="25.05.2026 0:00:00">25.05.2026</option>
+	<option value="18.05.2026 0:00:00">18.05.2026</option>
+	<option value="11.05.2026 0:00:00">11.05.2026</option>
+	<option value="04.05.2026 0:00:00">04.05.2026</option>
+	<option value="27.04.2026 0:00:00">27.04.2026</option>
+	<option value="20.04.2026 0:00:00">20.04.2026</option>
+	<option value="13.04.2026 0:00:00">13.04.2026</option>
+	<option value="06.04.2026 0:00:00">06.04.2026</option>
+	<option value="30.03.2026 0:00:00">30.03.2026</option>
+	<option value="23.03.2026 0:00:00">23.03.2026</option>
+	<option value="16.03.2026 0:00:00">16.03.2026</option>
+	<option value="09.03.2026 0:00:00">09.03.2026</option>
+	<option value="02.03.2026 0:00:00">02.03.2026</option>
+	<option value="23.02.2026 0:00:00">23.02.2026</option>
+	<option value="16.02.2026 0:00:00">16.02.2026</option>
+	<option value="09.02.2026 0:00:00">09.02.2026</option>
+	<option value="02.02.2026 0:00:00">02.02.2026</option>
+	<option value="26.01.2026 0:00:00">26.01.2026</option>
+	<option value="19.01.2026 0:00:00">19.01.2026</option>
+	<option value="12.01.2026 0:00:00">12.01.2026</option>
+	<option value="05.01.2026 0:00:00">05.01.2026</option>
+	<option value="29.12.2025 0:00:00">29.12.2025</option>
+	<option value="22.12.2025 0:00:00">22.12.2025</option>
+	<option value="15.12.2025 0:00:00">15.12.2025</option>
+	<option value="08.12.2025 0:00:00">08.12.2025</option>
+	<option value="01.12.2025 0:00:00">01.12.2025</option>
+	<option value="24.11.2025 0:00:00">24.11.2025</option>
+	<option value="17.11.2025 0:00:00">17.11.2025</option>
+	<option value="10.11.2025 0:00:00">10.11.2025</option>
+	<option value="03.11.2025 0:00:00">03.11.2025</option>
+	<option value="27.10.2025 0:00:00">27.10.2025</option>
+	<option value="20.10.2025 0:00:00">20.10.2025</option>
+	<option value="13.10.2025 0:00:00">13.10.2025</option>
+	<option value="06.10.2025 0:00:00">06.10.2025</option>
+	<option value="29.09.2025 0:00:00">29.09.2025</option>
+	<option value="22.09.2025 0:00:00">22.09.2025</option>
+	<option value="15.09.2025 0:00:00">15.09.2025</option>
+	<option value="08.09.2025 0:00:00">08.09.2025</option>
+	<option value="01.09.2025 0:00:00">01.09.2025</option>
+	<option value="14.07.2025 0:00:00">14.07.2025</option>
+	<option value="07.07.2025 0:00:00">07.07.2025</option>
+	<option value="30.06.2025 0:00:00">30.06.2025</option>
+	<option value="23.06.2025 0:00:00">23.06.2025</option>
+	<option value="16.06.2025 0:00:00">16.06.2025</option>
+	<option value="09.06.2025 0:00:00">09.06.2025</option>
+	<option value="02.06.2025 0:00:00">02.06.2025</option>
+	<option value="26.05.2025 0:00:00">26.05.2025</option>
+	<option value="19.05.2025 0:00:00">19.05.2025</option>
+	<option value="12.05.2025 0:00:00">12.05.2025</option>
+	<option value="05.05.2025 0:00:00">05.05.2025</option>
+	<option value="28.04.2025 0:00:00">28.04.2025</option>
+	<option value="21.04.2025 0:00:00">21.04.2025</option>
+	<option value="14.04.2025 0:00:00">14.04.2025</option>
+	<option value="07.04.2025 0:00:00">07.04.2025</option>
+	<option value="31.03.2025 0:00:00">31.03.2025</option>
+	<option value="24.03.2025 0:00:00">24.03.2025</option>
+	<option value="17.03.2025 0:00:00">17.03.2025</option>
+	<option value="10.03.2025 0:00:00">10.03.2025</option>
+	<option value="03.03.2025 0:00:00">03.03.2025</option>
+	<option value="24.02.2025 0:00:00">24.02.2025</option>
+	<option value="17.02.2025 0:00:00">17.02.2025</option>
+	<option value="10.02.2025 0:00:00">10.02.2025</option>
+	<option value="03.02.2025 0:00:00">03.02.2025</option>
+	<option value="27.01.2025 0:00:00">27.01.2025</option>
+	<option value="20.01.2025 0:00:00">20.01.2025</option>
+	<option value="13.01.2025 0:00:00">13.01.2025</option>
+	<option value="06.01.2025 0:00:00">06.01.2025</option>
+	<option value="30.12.2024 0:00:00">30.12.2024</option>
+	<option value="23.12.2024 0:00:00">23.12.2024</option>
+	<option value="16.12.2024 0:00:00">16.12.2024</option>
+	<option value="09.12.2024 0:00:00">09.12.2024</option>
+	<option value="02.12.2024 0:00:00">02.12.2024</option>
+	<option value="25.11.2024 0:00:00">25.11.2024</option>
+	<option value="18.11.2024 0:00:00">18.11.2024</option>
+	<option value="11.11.2024 0:00:00">11.11.2024</option>
+	<option value="04.11.2024 0:00:00">04.11.2024</option>
+	<option value="28.10.2024 0:00:00">28.10.2024</option>
+	<option value="21.10.2024 0:00:00">21.10.2024</option>
+	<option value="14.10.2024 0:00:00">14.10.2024</option>
+	<option value="07.10.2024 0:00:00">07.10.2024</option>
+	<option value="30.09.2024 0:00:00">30.09.2024</option>
+	<option value="23.09.2024 0:00:00">23.09.2024</option>
+	<option value="16.09.2024 0:00:00">16.09.2024</option>
+	<option value="09.09.2024 0:00:00">09.09.2024</option>
+	<option value="02.09.2024 0:00:00">02.09.2024</option>
+
+</select>
+            
+        </div>
+        <div class="action_1">
+            <input type="submit" name="ShowTT" value="Показать" id="ShowTT" />
+            <div class="show chosen-container chosen-container-single"><a class="chosen-single button">Показать</a></div>
+        </div>
+    </div>
+    
+    <br />
+            <span id="lMessage"></span>
+    <table id="TT">
+
+</table>
+    <input name="iframeheight" id="iframeheight" type="hidden"  value="0" />
+    <p class="help-msg">
+        
+    </p>
+    </form>
+    <table id="Table1">
+
+</table>
+    
+</body>
+</html>
+

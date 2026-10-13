@@ -4,6 +4,9 @@ import androidx.room.ConstructedBy
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.RoomDatabaseConstructor
+import androidx.room.migration.Migration
+import androidx.sqlite.SQLiteConnection
+import androidx.sqlite.execSQL
 import github.sushkpavel.studentbsuby.data.models.*
 
 @Database(
@@ -20,7 +23,7 @@ import github.sushkpavel.studentbsuby.data.models.*
     NewsContent::class
                ],
     exportSchema = false,
-    version = 1)
+    version = 2)
 @ConstructedBy(AppDatabaseConstructor::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun userDao(): UsersDao
@@ -34,6 +37,12 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun paidServicesDao(): PaidServicesDao
 
     abstract fun newsDao() : NewsDao
+}
+
+internal val MIGRATION_1_2 = object : Migration(1, 2) {
+    override fun migrate(connection: SQLiteConnection) {
+        connection.execSQL("ALTER TABLE `Lesson` ADD COLUMN `date` TEXT NOT NULL DEFAULT ''")
+    }
 }
 
 // The Room compiler generates the `actual` implementations.

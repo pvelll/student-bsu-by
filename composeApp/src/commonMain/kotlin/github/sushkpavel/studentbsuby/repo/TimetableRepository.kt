@@ -6,6 +6,8 @@ import github.sushkpavel.studentbsuby.api.dayOfWeek
 import github.sushkpavel.studentbsuby.api.isScheduleResponse
 import github.sushkpavel.studentbsuby.dao.LessonsDao
 import github.sushkpavel.studentbsuby.data.models.Lesson
+import github.sushkpavel.studentbsuby.data.models.User
+import github.sushkpavel.studentbsuby.util.Calendar
 import github.sushkpavel.studentbsuby.util.exceptions.IncorrectResponseException
 import github.sushkpavel.studentbsuby.util.exceptions.UsernameNotFoundException
 import kotlinx.coroutines.async
@@ -16,13 +18,20 @@ import kotlinx.coroutines.coroutineScope
 class TimetableRepository(
     private val usernameProvider: UsernameProvider,
     private val timetableApi: TimetableApi,
-    private val lessonsDao : LessonsDao
+    private val lessonsDao : LessonsDao,
+    private val iseuTimetableLoader: IseuTimetableLoader,
+    private val calendar: Calendar,
+    private val currentUser: suspend () -> User?,
 ) : CacheWebRepository<List<List<Lesson>>>() {
 
     override suspend fun getFromWeb(): List<List<Lesson>> {
 
         val username = usernameProvider.username.takeIf(String::isNotBlank)
             ?: throw UsernameNotFoundException()
+
+        currentUser()?.let(IseuStudent::from)?.let { student ->
+            return iseuTimetableLoader.load(username, student, calendar.today())
+        }
 
         timetableApi.init()
 
@@ -125,11 +134,14 @@ class TimetableRepository(
     }
 
     override suspend fun getFromCache(): List<List<Lesson>>{
+        val week = iseuWeekStart(calendar.today())
         return kotlin.runCatching {
             usernameProvider.username.takeIf(String::isNotBlank)?.let { username ->
                 lessonsDao.getAll(username)
+            }?.filter {
+                it.date.isEmpty() || it.weekStart() == week
             }?.takeIf { it.isNotEmpty() }?.groupBy { it.dayOfWeek }?.let { byDay ->
-                List(6) { day -> byDay[day].orEmpty() }
+                List(if (byDay.keys.any { it > 5 }) 7 else 6) { day -> byDay[day].orEmpty() }
             }
         }.getOrNull() ?: emptyList()
     }

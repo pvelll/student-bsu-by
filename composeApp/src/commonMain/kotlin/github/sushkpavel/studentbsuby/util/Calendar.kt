@@ -1,6 +1,7 @@
 package github.sushkpavel.studentbsuby.util
 
 import kotlinx.datetime.DayOfWeek
+import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
@@ -13,6 +14,7 @@ interface Calendar {
     val month : Int
     val year : Int
     fun time() : String
+    fun today() : LocalDate
 
     class Base : Calendar {
         override val dayOfMonth = now().day
@@ -35,6 +37,8 @@ interface Calendar {
                 "${it.hour.let { if (it>9) it else "0$it" }}:" +
                         "${it.minute.let { if (it>9) it else "0$it" }}"
         }
+
+        override fun today(): LocalDate = now().date
     }
 }
 

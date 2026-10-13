@@ -62,9 +62,12 @@ fun TimetableScreen(
         toolbarState = rememberCollapsingToolbarState()
     )
 
+    val timetable by timetableViewModel.timetableCommunication.collectAsState()
+
+    // Sunday is shown only when there are lessons on it
     val pagerState = rememberPagerState(
         initialPage = timetableViewModel.dayOfWeek.takeIf { it in 0..5 } ?: 0
-    ) { 6 }
+    ) { (timetable as? DataState.Success)?.value?.size ?: 6 }
 
     LaunchedEffect(Unit) {
         scaffoldState.toolbarState.collapse(0)
@@ -203,7 +206,7 @@ private fun CollapsingToolbarScope.Toolbar(
             }
         ) {
             val weekdays = stringArrayResource(Res.array.weekdays_short)
-            for (i in 0..5) {
+            for (i in 0 until pagerState.pageCount) {
                 Tab(
                     selected = pagerState.currentPage == i,
                     onClick = {

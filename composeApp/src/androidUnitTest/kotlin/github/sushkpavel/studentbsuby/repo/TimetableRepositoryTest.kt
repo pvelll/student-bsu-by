@@ -1,12 +1,15 @@
 package github.sushkpavel.studentbsuby.repo
 
 import github.sushkpavel.studentbsuby.api.FormUrlEncodedBody
+import github.sushkpavel.studentbsuby.api.IseuTimetableApi
 import github.sushkpavel.studentbsuby.api.TimetableApi
 import github.sushkpavel.studentbsuby.api.isScheduleResponse
 import github.sushkpavel.studentbsuby.dao.LessonsDao
 import github.sushkpavel.studentbsuby.data.models.Lesson
+import github.sushkpavel.studentbsuby.util.Calendar
 import io.ktor.client.statement.HttpResponse
 import kotlinx.coroutines.runBlocking
+import kotlinx.datetime.LocalDate
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -25,9 +28,24 @@ class TimetableRepositoryTest {
         override suspend fun clear(username: String) = Unit
     }
 
-    private fun lesson(day: Int, number: Int) = Lesson(
+    private val iseuApi = object : IseuTimetableApi {
+        override suspend fun page(): HttpResponse = error("not used")
+        override suspend fun postback(form: FormUrlEncodedBody): HttpResponse = error("not used")
+    }
+
+    // Tuesday
+    private val calendar = object : Calendar {
+        override val dayOfMonth = 13
+        override val dayOfWeek = 1
+        override val month = 9
+        override val year = 2026
+        override fun time() = "12:00"
+        override fun today() = LocalDate(2026, 10, 13)
+    }
+
+    private fun lesson(day: Int, number: Int, date: String = "") = Lesson(
         owner = "user", dayOfWeek = day, number = number, name = "$day-$number",
-        place = "", type = "", teacher = "", starts = "", ends = ""
+        place = "", type = "", teacher = "", starts = "", ends = "", date = date
     )
 
     private fun repository(vararg lessons: Lesson) = TimetableRepository(
@@ -35,7 +53,10 @@ class TimetableRepositoryTest {
             override val username = "user"
         },
         timetableApi = api,
-        lessonsDao = FakeLessonsDao(lessons.toList())
+        lessonsDao = FakeLessonsDao(lessons.toList()),
+        iseuTimetableLoader = IseuTimetableLoader(iseuApi),
+        calendar = calendar,
+        currentUser = { null }
     )
 
     @Test
@@ -55,6 +76,26 @@ class TimetableRepositoryTest {
     @Test
     fun `nothing is returned when nothing is cached`() = runBlocking {
         assertTrue(repository().getFromCache().isEmpty())
+    }
+
+    @Test
+    fun `cached lessons of a past week are outdated`() = runBlocking {
+        assertTrue(repository(lesson(0, 1, "2026-10-05"), lesson(4, 1, "2026-10-09")).getFromCache().isEmpty())
+
+        val cached = repository(lesson(0, 1, "2026-10-05"), lesson(1, 1, "2026-10-13"))
+            .getFromCache()
+        assertEquals(6, cached.size)
+        assertTrue(cached[0].isEmpty())
+        assertEquals(listOf("1-1"), cached[1].map { it.name })
+    }
+
+    @Test
+    fun `sunday is cached when it has lessons`() = runBlocking {
+        val cached = repository(lesson(0, 1, "2026-10-12"), lesson(6, 1, "2026-10-18"))
+            .getFromCache()
+
+        assertEquals(7, cached.size)
+        assertEquals(listOf("6-1"), cached[6].map { it.name })
     }
 
     @Test

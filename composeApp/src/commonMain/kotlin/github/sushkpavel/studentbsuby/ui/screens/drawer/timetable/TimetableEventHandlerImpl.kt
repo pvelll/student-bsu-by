@@ -78,18 +78,21 @@ private class UpdateRequestedHandler(
     private suspend fun update(dataSource: DataSource) = mutex.withLock {
         timetableRepository.get(dataSource)
             .onEach {
+                val today = calendar.today().toString()
                 val state = if (it.any { it.isNotEmpty() })
                     DataState.Success(
                         it.map { day ->
                             var hasRunning = false
                             val time = calendar.time()
                             day.mapIndexed { _, lesson ->
+                                val dayOrder = if (lesson.date.isNotEmpty())
+                                    lesson.date.compareTo(today)
+                                else lesson.dayOfWeek.compareTo(calendar.dayOfWeek)
+
                                 lesson to when {
-                                    lesson.dayOfWeek < calendar.dayOfWeek ||
-                                            lesson.dayOfWeek == calendar.dayOfWeek && lesson.ends <= time ->
+                                    dayOrder < 0 || dayOrder == 0 && lesson.ends <= time ->
                                         LessonState.PASSED
-                                    !hasRunning && lesson.dayOfWeek == calendar.dayOfWeek &&
-                                            lesson.ends > time ->
+                                    !hasRunning && dayOrder == 0 && lesson.ends > time ->
                                         LessonState.RUNNING.also { hasRunning = true }
                                     else -> LessonState.INCOMING
                                 }
