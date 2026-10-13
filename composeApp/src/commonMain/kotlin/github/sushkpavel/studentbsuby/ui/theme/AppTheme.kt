@@ -36,6 +36,7 @@ private val LightColorPalette = lightColors(
 
 @Composable
 fun StudentbsubyTheme(
+    lightSystemBarIcons: Boolean = false,
     content: @Composable () -> Unit
 ) {
 
@@ -45,7 +46,7 @@ fun StudentbsubyTheme(
         isSystemInDarkTheme()
     else themeSelector.currentTheme.value == Theme.Dark
 
-    SystemBarAppearance(isDark)
+    SystemBarAppearance(isDark || lightSystemBarIcons)
 
     val colors = if (isDark) DarkColorPalette else LightColorPalette
 

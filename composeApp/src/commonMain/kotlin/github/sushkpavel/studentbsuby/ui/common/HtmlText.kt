@@ -25,10 +25,6 @@ import com.fleeksoft.ksoup.nodes.TextNode
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
 
-/**
- * Renders a string containing simple html markup (<a href>, <b>, <i>, <br>).
- * Links are opened with [androidx.compose.ui.platform.LocalUriHandler].
- */
 @Composable
 fun HtmlText(
     modifier: Modifier = Modifier,

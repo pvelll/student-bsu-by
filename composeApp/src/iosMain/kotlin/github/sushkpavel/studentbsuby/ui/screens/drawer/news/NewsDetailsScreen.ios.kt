@@ -37,7 +37,6 @@ import platform.darwin.NSObject
 actual fun NewsDetailsScreen(id: Int, viewModel: NewsViewModel) {
     val newsRepository = koinInject<NewsRepository>()
     val platformActions = koinInject<PlatformActions>()
-    // WKWebView keeps its navigation delegate weakly.
     val navigationDelegate = remember { ExternalLinksDelegate(platformActions::openUrl) }
 
     var content by remember(id) { mutableStateOf<NewsContent?>(null) }
@@ -86,10 +85,6 @@ actual fun NewsDetailsScreen(id: Int, viewModel: NewsViewModel) {
     }
 }
 
-/**
- * Opens tapped links in the system browser (as on Android) instead of navigating the
- * news web view, which has no address bar or back button.
- */
 private class ExternalLinksDelegate(
     private val openUrl: (String) -> Unit
 ) : NSObject(), WKNavigationDelegateProtocol {

@@ -21,11 +21,6 @@ interface LoginCookieManager {
     fun canRestoreSession() : Boolean
 }
 
-/**
- * Persists cookies per domain as sets of Set-Cookie strings
- * ("name=value; expires=...; domain=...; path=...") — the same format the old
- * okhttp cookie jar stored in SharedPreferences.
- */
 class PersistentCookiesStorage(
     private val settings: ObservableSettings
 ) : CookiesStorage, LoginCookieManager {

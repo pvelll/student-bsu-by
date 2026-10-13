@@ -27,4 +27,28 @@ object Colors {
     val Red by lazy {
         Color(0xffff7070)
     }
+
+    val Orange by lazy {
+        Color(0xffffb066)
+    }
+
+    val Lime by lazy {
+        Color(0xffbadf5f)
+    }
+
+    val Gold by lazy {
+        Color(0xffffcc4d)
+    }
+
+    val Silver by lazy {
+        Color(0xffc3cad4)
+    }
+
+    val Bronze by lazy {
+        Color(0xffe0a070)
+    }
+
+    val OnMark by lazy {
+        Color(0xff1d1d1d)
+    }
 }

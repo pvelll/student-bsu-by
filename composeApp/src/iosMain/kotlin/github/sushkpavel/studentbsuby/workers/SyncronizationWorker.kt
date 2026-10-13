@@ -23,11 +23,6 @@ class BackgroundSyncScheduler(
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
-    /**
-     * Must be called before the application finishes launching.
-     * TASK_IDENTIFIER must be listed in BGTaskSchedulerPermittedIdentifiers
-     * of the app Info.plist.
-     */
     fun register() {
         BGTaskScheduler.sharedScheduler.registerForTaskWithIdentifier(
             identifier = TASK_IDENTIFIER,

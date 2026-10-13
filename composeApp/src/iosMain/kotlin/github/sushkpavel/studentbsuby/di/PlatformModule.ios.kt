@@ -12,6 +12,8 @@ import github.sushkpavel.studentbsuby.services.firebase.CrashReporter
 import github.sushkpavel.studentbsuby.services.firebase.CrashReporterImpl
 import github.sushkpavel.studentbsuby.services.firebase.RemoteConfigClient
 import github.sushkpavel.studentbsuby.services.firebase.RemoteConfigClientImpl
+import github.sushkpavel.studentbsuby.services.lock.BiometricAuthenticator
+import github.sushkpavel.studentbsuby.services.lock.BiometricAuthenticatorImpl
 import github.sushkpavel.studentbsuby.services.store.ReviewLauncher
 import github.sushkpavel.studentbsuby.services.store.ReviewLauncherImpl
 import github.sushkpavel.studentbsuby.services.store.UpdateLauncher
@@ -69,4 +71,6 @@ val platformModule = module {
     single<UpdateLauncher> { UpdateLauncherImpl() }
 
     single<PlatformActions> { PlatformActionsIos() }
+
+    single<BiometricAuthenticator> { BiometricAuthenticatorImpl() }
 }

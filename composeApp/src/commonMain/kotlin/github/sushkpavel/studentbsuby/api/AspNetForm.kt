@@ -3,13 +3,6 @@ package github.sushkpavel.studentbsuby.api
 import com.fleeksoft.ksoup.Ksoup
 import com.fleeksoft.ksoup.nodes.Document
 
-/**
- * Hidden state of an ASP.NET WebForms page (`__VIEWSTATE`, `__EVENTVALIDATION`, ...).
- *
- * student.bsu.by validates every postback against the state rendered on the page that is
- * being posted back, so a postback must always be built from a freshly loaded page instead
- * of hardcoded values.
- */
 class AspNetForm private constructor(
     private val hiddenFields: Map<String, String>
 ) {
@@ -18,10 +11,6 @@ class AspNetForm private constructor(
 
     val isValid: Boolean get() = viewState.isNotEmpty()
 
-    /**
-     * Form body of a regular (full page) postback caused by [eventTarget]
-     * (a `__doPostBack('target', 'argument')` call on the page).
-     */
     fun postback(
         eventTarget: String,
         eventArgument: String = "",
@@ -33,9 +22,6 @@ class AspNetForm private constructor(
         putAll(extra)
     }
 
-    /**
-     * Form body of a partial rendering (UpdatePanel / ScriptManager) postback.
-     */
     fun asyncPostback(
         scriptManager: String,
         updatePanel: String,
@@ -77,10 +63,6 @@ class AspNetForm private constructor(
     }
 }
 
-/**
- * Extracts the html fragment from an ASP.NET partial rendering response
- * (`1|#||4|1234|updatePanel|<id>|<html>|...`). Regular html is returned untouched.
- */
 fun String.asyncPostbackHtml(): String {
     if (!contains("|updatePanel|"))
         return this

@@ -8,6 +8,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import github.sushkpavel.studentbsuby.navigation.Route
@@ -20,9 +21,9 @@ import github.sushkpavel.studentbsuby.ui.screens.settings.SettingsScreen
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun MainScreen() {
-
-    val navController = rememberNavController()
+fun MainScreen(
+    navController: NavHostController = rememberNavController(),
+) {
 
 //    navController.setLifecycleOwner(LocalLifecycleOwner.current)
 //    LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher?.let {

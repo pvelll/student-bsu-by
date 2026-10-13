@@ -10,9 +10,6 @@ import platform.Foundation.NSProcessInfo
 import kotlin.experimental.ExperimentalNativeApi
 import kotlin.native.Platform
 
-// The Darwin engine never follows redirects natively (its NSURLSession delegate
-// cancels them), so redirect handling is fully controlled by followRedirects = false.
-// Native cookie handling is disabled entirely: Ktor's HttpCookies plugin owns cookies.
 actual fun httpClientEngine() : HttpClientEngineFactory<*> =
     object : HttpClientEngineFactory<DarwinClientEngineConfig> {
         override fun create(block: DarwinClientEngineConfig.() -> Unit): HttpClientEngine =
@@ -31,11 +28,6 @@ actual fun httpClientEngine() : HttpClientEngineFactory<*> =
             }
     }
 
-/**
- * Debug binaries only: `STUDENTBSUBY_HTTP_PROXY=host:port` in the process environment
- * routes the traffic through an http proxy. student.bsu.by is reachable from Belarus
- * only, so simulator runs are tunneled through a proxy on the development machine.
- */
 private fun debugProxy(): Pair<String, Int>? {
     if (!Platform.isDebugBinary)
         return null

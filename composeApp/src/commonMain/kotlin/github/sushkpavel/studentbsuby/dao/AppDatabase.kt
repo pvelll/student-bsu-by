@@ -45,7 +45,6 @@ internal val MIGRATION_1_2 = object : Migration(1, 2) {
     }
 }
 
-// The Room compiler generates the `actual` implementations.
 @Suppress("NO_ACTUAL_FOR_EXPECT", "KotlinNoActualForExpect")
 expect object AppDatabaseConstructor : RoomDatabaseConstructor<AppDatabase> {
     override fun initialize(): AppDatabase

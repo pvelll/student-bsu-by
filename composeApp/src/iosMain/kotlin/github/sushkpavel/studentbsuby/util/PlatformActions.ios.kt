@@ -28,11 +28,6 @@ class PlatformActionsIos : PlatformActions {
         appStoreUrl()?.let(::openUrl)
     }
 
-    /**
-     * Opens [url] with the system. Android-style `geo:` uris are translated to Apple Maps
-     * and non-ascii characters (cyrillic addresses) are percent-encoded — [NSURL] refuses to
-     * parse them otherwise, which made "show on map" a silent no-op.
-     */
     override fun openUrl(url: String) {
         val candidates = mapUrls(url) ?: listOf(url)
         openFirstAvailable(candidates.mapNotNull(::toNSURL))

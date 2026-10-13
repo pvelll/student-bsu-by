@@ -71,8 +71,6 @@ class FileLogger constructor(
         }
     }
 
-    // Reproduces the legacy SimpleDateFormat("[yyyy-mm-dd hh:mm:ss]") pattern
-    // (minutes in the month slot, 12-hour clock) so log files stay consistent.
     @OptIn(ExperimentalTime::class)
     private fun timestamp(): String {
         val now = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())

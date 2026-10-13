@@ -5,10 +5,6 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.unit.dp
 
-/**
- * Replicates the sw600dp resource qualifier: smallest dimension
- * of the window is at least 600dp, regardless of orientation.
- */
 @Composable
 fun isTablet(): Boolean {
     val containerSize = LocalWindowInfo.current.containerSize

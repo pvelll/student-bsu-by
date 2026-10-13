@@ -30,11 +30,6 @@ suspend fun HttpResponse.html() : String {
     return text
 }
 
-/**
- * Raw body of a binary response (photo, captcha). The site answers with the login page
- * instead of an image when the session is gone, so html responses are checked for the
- * login form before the bytes are handed out.
- */
 @Throws(
     FailResponseException::class,
     SessionExpiredException::class,

@@ -67,8 +67,6 @@ private class InitializedHandler(
         coroutineScope {
             launch {
                 kotlin.runCatching {
-                    // Android impl asks only when the permission is not granted yet
-                    // (13+); below 13 and when granted it returns without asking.
                     platformActions.requestNotificationsPermission()
                 }
             }

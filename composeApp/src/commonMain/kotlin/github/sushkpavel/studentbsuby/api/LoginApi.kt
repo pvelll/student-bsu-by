@@ -53,8 +53,6 @@ class LoginApiWrapper(private val api: LoginApi) : LoginApi {
     private var __EVENTTARGET = ""
     private var __EVENTARGUMENT = ""
 
-    // Ktor 3 HttpResponse is not reusable after body is consumed.
-    // We store the last body string to avoid double-reading.
     var lastBody: String? = null
         private set
 

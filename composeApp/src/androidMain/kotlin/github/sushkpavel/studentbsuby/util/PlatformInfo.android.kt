@@ -6,10 +6,6 @@ import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
 import android.os.Build
 
-/**
- * Application context holder. Must be initialized in [android.app.Application.onCreate]
- * before any platform util is used.
- * */
 @SuppressLint("StaticFieldLeak")
 object AndroidAppContext {
     lateinit var context: Context

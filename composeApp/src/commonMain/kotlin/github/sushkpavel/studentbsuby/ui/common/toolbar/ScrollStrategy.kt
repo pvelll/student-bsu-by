@@ -118,9 +118,6 @@ internal class EnterAlwaysNestedScrollConnection(
 		val left = if(velocity > 0) {
 			toolbarState.fling(flingBehavior, velocity)
 		}else{
-			// If velocity < 0, the main content should have a remaining scroll space
-			// so the scroll resumes to the onPreScroll(..., Fling) phase. Hence we do
-			// not need to process it at onPostFling() manually.
 			velocity
 		}
 
@@ -178,9 +175,6 @@ internal class EnterAlwaysCollapsedNestedScrollConnection(
 		val dy = available.y
 
 		val left = if(dy > 0) {
-			// onPostFling() has positive available scroll value only called if the main scroll
-			// has leftover scroll, i.e. the scroll of the main content has done. So we just process
-			// fling if the available value is positive.
 			toolbarState.fling(flingBehavior, dy)
 		}else{
 			dy

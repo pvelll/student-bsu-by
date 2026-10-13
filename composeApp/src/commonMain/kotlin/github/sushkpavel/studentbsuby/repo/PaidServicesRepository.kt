@@ -328,14 +328,6 @@ private typealias DateFormat = SimpleDateFormat
 
 private class Date(val time: Long)
 
-/**
- * 1:1 stand-in for the original java.text.SimpleDateFormat("dd.mm.yyyy", Locale.getDefault()).
- * The lowercase 'mm' in the original pattern means MINUTES, so every parsed date lands in
- * January with the real month value stored in the minutes field. Cached deadlines and the
- * descending 'deadline' sorting depend on these quirky millis - do not fix the pattern.
- * Throws on unparseable input like java's parse(String) (the per-row runCatching of the
- * callers then skips the row, exactly as before).
- */
 @OptIn(ExperimentalTime::class)
 private class SimpleDateFormat(pattern: String) {
 
@@ -362,7 +354,6 @@ private class SimpleDateFormat(pattern: String) {
         readSeparator()
         val year = readNumber()
 
-        // lenient GregorianCalendar normalization: out-of-range days/minutes roll over
         val dateTime = LocalDate(year, 1, 1)
             .plus(day - 1 + minute.floorDiv(24 * 60), DateTimeUnit.DAY)
             .atTime(minute.mod(24 * 60) / 60, minute.mod(60))

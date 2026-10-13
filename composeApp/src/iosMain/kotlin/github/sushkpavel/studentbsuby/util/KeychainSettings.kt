@@ -38,10 +38,6 @@ import platform.Security.kSecReturnAttributes
 import platform.Security.kSecReturnData
 import platform.Security.kSecValueData
 
-/**
- * [ObservableSettings] backed by the iOS Keychain ([kSecClassGenericPassword] items with
- * [kSecAttrService] = [service]). Replaces Android EncryptedSharedPreferences for secure storage.
- * */
 class KeychainSettings(private val service: String) : ObservableSettings {
 
     private val listeners = mutableMapOf<String, MutableList<() -> Unit>>()

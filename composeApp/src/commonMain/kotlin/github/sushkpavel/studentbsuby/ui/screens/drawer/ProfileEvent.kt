@@ -10,6 +10,7 @@ import github.sushkpavel.studentbsuby.resources.about
 import github.sushkpavel.studentbsuby.resources.hostel
 import github.sushkpavel.studentbsuby.resources.news
 import github.sushkpavel.studentbsuby.resources.paidservices
+import github.sushkpavel.studentbsuby.resources.progress
 import github.sushkpavel.studentbsuby.resources.subjects
 import github.sushkpavel.studentbsuby.resources.timetable
 import github.sushkpavel.studentbsuby.util.Event
@@ -20,6 +21,7 @@ sealed class DrawerRoute(
     val icon: ImageVector, val title : StringResource, val  route: Route
 ){
     object Subjects : DrawerRoute(Icons.Default.Dashboard, Res.string.subjects, Route.DrawerScreen.Subjects)
+    object Progress : DrawerRoute(Icons.Default.Insights, Res.string.progress, Route.DrawerScreen.Progress)
     object Timetable : DrawerRoute(Icons.Default.FormatListBulleted, Res.string.timetable, Route.DrawerScreen.Timetable)
     object About : DrawerRoute(Icons.Default.Info, Res.string.about, Route.DrawerScreen.About)
     object Hostel : DrawerRoute(Icons.Default.House, Res.string.hostel, Route.DrawerScreen.Hostel)

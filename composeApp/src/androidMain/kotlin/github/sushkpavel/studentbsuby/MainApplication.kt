@@ -20,8 +20,6 @@ class MainApplication : Application(), Configuration.Provider {
 
     override fun onCreate() {
         super.onCreate()
-        // Must be set before Koin starts: settings providers, platformInfo() and
-        // FileLogger read it.
         AndroidAppContext.context = this
         initFirebase(this)
         initKoin(platformModules = listOf(platformModule)) {
@@ -30,9 +28,6 @@ class MainApplication : Application(), Configuration.Provider {
         }
     }
 
-    // On-demand WorkManager initialization (the default WorkManagerInitializer is
-    // removed in the manifest); replaces the original HiltWorkerFactory so the
-    // already-enqueued "SynchronizationWorker" periodic work keeps resolving.
     override val workManagerConfiguration: Configuration by lazy {
         Configuration.Builder()
             .setWorkerFactory(SyncWorkerFactory())

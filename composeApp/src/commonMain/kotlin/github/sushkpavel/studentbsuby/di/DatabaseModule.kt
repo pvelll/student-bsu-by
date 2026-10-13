@@ -3,11 +3,6 @@ package github.sushkpavel.studentbsuby.di
 import github.sushkpavel.studentbsuby.dao.AppDatabase
 import org.koin.dsl.module
 
-/**
- * Mirrors the original RoomModule. The [AppDatabase] itself is bound in the platform
- * modules because the Room builder entry points differ (Android needs a Context, iOS
- * sets the bundled SQLite driver); all DAO bindings stay common.
- */
 val databaseModule = module {
 
     single { get<AppDatabase>().userDao() }

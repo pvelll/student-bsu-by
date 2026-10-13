@@ -5,15 +5,6 @@ import org.koin.core.context.startKoin
 import org.koin.core.module.Module
 import org.koin.dsl.KoinAppDeclaration
 
-/**
- * All shared Koin modules, mirroring the original Hilt module split:
- * AppModule -> [appModule], RetrofitModule -> [networkModule], RoomModule ->
- * [databaseModule], LoginModule -> [loginModule], ProfileModule -> [profileModule],
- * SubjectsModule -> [subjectsModule], TimetableModule -> [timetableModule],
- * NewsModule -> [newsModule], HostelModule -> [hostelModule], PaidServicesModule ->
- * [paidServicesModule], SettingsModule -> [settingsModule], AboutModule ->
- * [aboutModule], MainActivityModule -> [mainModule].
- */
 val sharedModules: List<Module> = listOf(
     appModule,
     networkModule,
@@ -21,11 +12,13 @@ val sharedModules: List<Module> = listOf(
     loginModule,
     profileModule,
     subjectsModule,
+    progressModule,
     timetableModule,
     newsModule,
     hostelModule,
     paidServicesModule,
     settingsModule,
+    securityModule,
     aboutModule,
     mainModule,
 )

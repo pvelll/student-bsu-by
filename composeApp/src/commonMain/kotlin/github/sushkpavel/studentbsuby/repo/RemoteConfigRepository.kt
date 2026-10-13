@@ -66,10 +66,6 @@ class RemoteConfigRepository(
     suspend fun getMinimumStableVersionIfNeeded() : ApplicationVersion? =
         getVersion(STABLE_VER)?.takeIf { platformInfo.versionCode < it.code }
 
-    /**
-     * Developer's Telegram. Remote config may override it; without a configured Firebase
-     * project (no google-services.json) the remote value is empty and the default is used.
-     */
     fun telegram() : String = kotlin.runCatching {
         remoteConfigClient.getString(TELEGRAM)
     }.getOrNull()?.takeIf(String::isNotBlank) ?: DEFAULT_TELEGRAM

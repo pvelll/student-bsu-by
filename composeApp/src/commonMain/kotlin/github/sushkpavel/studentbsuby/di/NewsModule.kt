@@ -10,9 +10,6 @@ import org.koin.core.module.dsl.viewModel
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
-/**
- * Mirrors the original NewsModule (ViewModelComponent).
- */
 val newsModule = module {
 
     factory {
