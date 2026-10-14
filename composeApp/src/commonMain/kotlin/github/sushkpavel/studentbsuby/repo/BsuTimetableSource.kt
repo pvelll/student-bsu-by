@@ -1,0 +1,118 @@
+package github.sushkpavel.studentbsuby.repo
+
+import com.fleeksoft.ksoup.Ksoup
+import github.sushkpavel.studentbsuby.api.TimetableApi
+import github.sushkpavel.studentbsuby.api.dayOfWeek
+import github.sushkpavel.studentbsuby.api.isScheduleResponse
+import github.sushkpavel.studentbsuby.data.models.Lesson
+import github.sushkpavel.studentbsuby.data.models.User
+import github.sushkpavel.studentbsuby.util.exceptions.IncorrectResponseException
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
+import kotlinx.datetime.LocalDate
+
+class BsuTimetableSource(private val timetableApi: TimetableApi) : TimetableSource {
+
+    override suspend fun load(owner: String, user: User?, today: LocalDate): List<List<Lesson>> {
+
+        timetableApi.init()
+
+        if (!timetableApi.hasSchedule)
+            return List(6) { emptyList() }
+
+        return coroutineScope {
+            (0..5).map { day ->
+                async {
+
+                    val string = timetableApi.timetable(timetableApi.dayOfWeek(day)).html()
+                    if (!timetableApi.isScheduleResponse(string))
+                        throw IncorrectResponseException()
+                    val html =
+                        '<' + string.substringAfter('<').substringBeforeLast('>') + '>'
+                    val jsoup = Ksoup.parse(html)
+
+                    val numbers = jsoup.getElementsByClass("styleNumber").mapNotNull {
+                        it.text().toIntOrNull() to (it.attr("rowspan").toIntOrNull() ?: 1)
+                    }
+                    val timesStart = jsoup.getElementsByClass("styleTimeIn").map {
+                        it.text().orEmpty()
+                    }
+                    val timesEnd = jsoup.getElementsByClass("styleTimeOut").map {
+                        it.text().orEmpty()
+                    }
+                    val names = jsoup.getElementsByClass("styleLesson").map {
+                        it.text().orEmpty() to (it.attr("rowspan").toIntOrNull() ?: 1)
+                    }
+                    val types = jsoup.getElementsByClass("styleKindLesson").map {
+                        it.text().orEmpty() to (it.attr("rowspan").toIntOrNull() ?: 1)
+                    }
+                    val audiences = jsoup.getElementsByClass("styleHall").map {
+                        it.text().orEmpty() to (it.attr("rowspan").toIntOrNull() ?: 1)
+                    }
+                    val teachers = jsoup.getElementsByClass("styleTeacher").map {
+                        it.text().orEmpty() to (it.attr("rowspan").toIntOrNull() ?: 1)
+                    }
+
+                    val spans = numbers.map { it.second }
+
+                    val chunkedNames = chunk(spans, names).map {
+                        it.joinToString(separator = " \\ ")
+                    }
+                    val chunkedTypes = chunk(spans, types).map {
+                        it.joinToString(separator = " \\ ")
+                    }
+                    val chunkedAudiences = chunk(spans, audiences).map {
+                        it.joinToString(separator = " \\ ")
+                    }
+                    val chunkedTeachers = chunk(spans, teachers).map {
+                        it.joinToString(separator = " \\ ")
+                    }
+
+                    kotlin.runCatching {
+                        numbers.indices.mapNotNull {
+                            if (it in chunkedNames.indices && chunkedNames[it].isNotEmpty()) {
+                                Lesson(
+                                    id = 0,
+                                    owner = owner,
+                                    dayOfWeek = day,
+                                    number = if (it in numbers.indices)
+                                        numbers[it].first ?: 0 else 0,
+                                    name = chunkedNames[it],
+                                    place = if (it in chunkedAudiences.indices)
+                                        chunkedAudiences[it] else "",
+                                    type = if (it in chunkedTypes.indices)
+                                        chunkedTypes[it] else "",
+                                    teacher = if (it in chunkedTeachers.indices)
+                                        chunkedTeachers[it] else "",
+                                    starts = if (it in timesStart.indices)
+                                        timesStart[it] else "",
+                                    ends = if (it in timesEnd.indices)
+                                        timesEnd[it] else ""
+                                )
+                            } else null
+                        }
+                    }.getOrNull() ?: emptyList()
+                }
+            }.awaitAll()
+        }
+    }
+
+    private fun <T> chunk(spans : List<Int>, values : List<Pair<T,Int>>) : List<List<T>> {
+        val mutableValues = values.toMutableList()
+        return spans.map { chunkSize ->
+            var currentChunkSize = 0
+            val currentList = mutableListOf<T>()
+            while (currentChunkSize<chunkSize && mutableValues.isNotEmpty()){
+                val item = mutableValues.removeAt(0)
+                val diff = chunkSize - (currentChunkSize+item.second)
+                if (diff<0){
+                    mutableValues.add(0,item.first to -diff)
+                }
+                currentChunkSize += item.second
+                currentList.add(item.first)
+            }
+            currentList
+        }
+    }
+}

@@ -25,6 +25,9 @@ kotlin {
         iosTarget.binaries.framework {
             baseName = "ComposeApp"
             isStatic = true
+            // Line tables for release builds too: they end up in the app's dSYM, so Crashlytics
+            // shows Kotlin files and line numbers.
+            freeCompilerArgs += "-Xadd-light-debug=enable"
         }
     }
 
@@ -93,6 +96,7 @@ kotlin {
 
         androidUnitTest.dependencies {
             implementation(kotlin("test"))
+            implementation(libs.ktor.client.mock)
         }
     }
 }
@@ -115,8 +119,8 @@ android {
         applicationId = "github.sushkpavel.studentbsuby"
         minSdk = 24
         targetSdk = 36
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 2
+        versionName = "1.0-alpha-1"
     }
 
     signingConfigs {

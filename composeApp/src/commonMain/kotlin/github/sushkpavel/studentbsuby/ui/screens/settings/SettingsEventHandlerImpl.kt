@@ -40,5 +40,7 @@ class SettingsEventHandlerImpl(
             }
             Unit
         }
+        // Debug builds only: Firebase finishes the Crashlytics setup after the first received crash.
+        is SettingsEvent.TestCrash -> throw RuntimeException("Test crash from the settings screen")
     }
 }

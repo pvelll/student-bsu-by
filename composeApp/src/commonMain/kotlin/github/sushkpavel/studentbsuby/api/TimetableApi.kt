@@ -1,10 +1,12 @@
 package github.sushkpavel.studentbsuby.api
 
 import com.fleeksoft.ksoup.Ksoup
+import github.sushkpavel.studentbsuby.network.retryTransientFailures
 import github.sushkpavel.studentbsuby.util.exceptions.FailResponseException
 import github.sushkpavel.studentbsuby.util.exceptions.IncorrectResponseException
 import github.sushkpavel.studentbsuby.util.exceptions.SessionExpiredException
 import io.ktor.client.HttpClient
+import io.ktor.client.plugins.retry
 import io.ktor.client.request.forms.submitForm
 import io.ktor.client.request.get
 import io.ktor.client.request.header
@@ -47,6 +49,7 @@ class TimetableApiImpl(private val client : HttpClient) : TimetableApi {
             }
         ) {
             header("User-Agent", "Mozilla")
+            retry { retryTransientFailures() }
         }
 }
 

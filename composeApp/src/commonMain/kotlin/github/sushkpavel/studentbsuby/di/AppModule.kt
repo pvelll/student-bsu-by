@@ -39,7 +39,7 @@ val appModule = module {
 
     factory<Dispatchers> { DispatchersImpl(CoroutineJobManagerImpl()) }
 
-    factory<ErrorHandler> { ErrorHandler.Log(get()) }
+    factory<ErrorHandler> { ErrorHandler.Log(get(), get()) }
 
     factory<UsernameProvider> { UsernameProviderImpl(get(named("CredentialsPrefs"))) }
 

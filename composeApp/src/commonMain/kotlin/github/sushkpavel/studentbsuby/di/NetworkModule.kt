@@ -1,5 +1,7 @@
 package github.sushkpavel.studentbsuby.di
 
+import github.sushkpavel.studentbsuby.api.IseuTimetableApi
+import github.sushkpavel.studentbsuby.api.IseuTimetableApiImpl
 import github.sushkpavel.studentbsuby.api.LoginApi
 import github.sushkpavel.studentbsuby.api.LoginApiImpl
 import github.sushkpavel.studentbsuby.api.LoginApiWrapper
@@ -11,6 +13,7 @@ import github.sushkpavel.studentbsuby.api.TimetableApi
 import github.sushkpavel.studentbsuby.api.TimetableApiImpl
 import github.sushkpavel.studentbsuby.api.TimetableApiWrapper
 import github.sushkpavel.studentbsuby.network.createHttpClient
+import github.sushkpavel.studentbsuby.network.createIseuHttpClient
 import github.sushkpavel.studentbsuby.util.LoginCookieManager
 import github.sushkpavel.studentbsuby.util.PersistentCookiesStorage
 import org.koin.core.qualifier.named
@@ -33,4 +36,8 @@ val networkModule = module {
     single<TimetableApi> { TimetableApiWrapper(TimetableApiImpl(get())) }
 
     single<PaidServicesApi> { PaidServicesApiImpl(get()) }
+
+    single(named("Iseu")) { createIseuHttpClient(get()) }
+
+    single<IseuTimetableApi> { IseuTimetableApiImpl(get(named("Iseu"))) }
 }

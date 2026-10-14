@@ -78,22 +78,7 @@ private class UpdateRequestedHandler(
         timetableRepository.get(dataSource)
             .onEach {
                 val state = if (it.any { it.isNotEmpty() })
-                    DataState.Success(
-                        it.map { day ->
-                            var hasRunning = false
-                            val time = calendar.time()
-                            day.mapIndexed { _, lesson ->
-                                lesson to when {
-                                    lesson.dayOfWeek < calendar.dayOfWeek ||
-                                            lesson.dayOfWeek == calendar.dayOfWeek && lesson.ends <= time ->
-                                        LessonState.PASSED
-                                    !hasRunning && lesson.dayOfWeek == calendar.dayOfWeek &&
-                                            lesson.ends > time ->
-                                        LessonState.RUNNING.also { hasRunning = true }
-                                    else -> LessonState.INCOMING
-                                }
-                            }
-                        })
+                    DataState.Success(it.withStates(calendar.today(), calendar.time()))
                 else DataState.Empty
 
                 timetableMapper.map(state)

@@ -30,6 +30,8 @@ import github.sushkpavel.studentbsuby.resources.setting_collect_crashlytics
 import github.sushkpavel.studentbsuby.resources.setting_collect_crashlytics_helper
 import github.sushkpavel.studentbsuby.resources.setting_collect_statistics
 import github.sushkpavel.studentbsuby.resources.setting_collect_statistics_helper
+import github.sushkpavel.studentbsuby.resources.setting_test_crash
+import github.sushkpavel.studentbsuby.resources.setting_test_crash_helper
 import github.sushkpavel.studentbsuby.resources.settings
 import github.sushkpavel.studentbsuby.resources.settings_dark_theme_forsed
 import github.sushkpavel.studentbsuby.resources.settings_dark_theme_system
@@ -160,8 +162,9 @@ private fun Body(viewModel: SettingsViewModel) {
 
         val state by viewModel.state.collectAsState()
 
+        GroupName(name = stringResource(Res.string.other))
+        // Firebase Analytics is Android only; Crashlytics works on both platforms.
         if (platformInfo.platformName == "android") {
-            GroupName(name = stringResource(Res.string.other))
             TogglePreference(
                 title = Res.string.setting_collect_statistics,
                 helper = AnnotatedString(stringResource(Res.string.setting_collect_statistics_helper)),
@@ -170,12 +173,21 @@ private fun Body(viewModel: SettingsViewModel) {
                     viewModel.handle(SettingsEvent.CollectStatistic(it))
                 }
             )
-            TogglePreference(
-                title = Res.string.setting_collect_crashlytics,
-                helper = AnnotatedString(stringResource(Res.string.setting_collect_crashlytics_helper)),
-                checked = state.collectCrashlytics,
-                onChanged = {
-                    viewModel.handle(SettingsEvent.CollectCrashlytics(it))
+        }
+        TogglePreference(
+            title = Res.string.setting_collect_crashlytics,
+            helper = AnnotatedString(stringResource(Res.string.setting_collect_crashlytics_helper)),
+            checked = state.collectCrashlytics,
+            onChanged = {
+                viewModel.handle(SettingsEvent.CollectCrashlytics(it))
+            }
+        )
+        if (platformInfo.isDebug) {
+            ButtonPreference(
+                title = Res.string.setting_test_crash,
+                helper = Res.string.setting_test_crash_helper,
+                onClick = {
+                    viewModel.handle(SettingsEvent.TestCrash)
                 }
             )
         }

@@ -8,4 +8,5 @@ sealed interface SettingsEvent : Event {
     class CollectCrashlytics(val enabled : Boolean) : SettingsEvent
     data object ShareLogs : SettingsEvent
     data object DontKillMyApp : SettingsEvent
+    data object TestCrash : SettingsEvent
 }
