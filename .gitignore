@@ -83,7 +83,15 @@ Pods/
 **/fastlane/screenshots/
 **/fastlane/test_output/
 
+# --- Personal notes ----------------------------------------------------------
+# Release checklists and store questionnaire answers written for the developer.
+# docs/privacy-policy.md stays public: the stores link to it via GitHub Pages.
+RELEASE.md
+docs/store-listing.md
+iosApp/TESTFLIGHT.md
+
 # --- OS / tools --------------------------------------------------------------
 .DS_Store
+._*
 .claude/
 CLAUDE.local.md

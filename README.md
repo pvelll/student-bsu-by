@@ -30,9 +30,16 @@ Works both on ios and android.
 * Concurrency - Coroutines, Flow
 * Architecture - MVVM
 
-## Release
+## Firebase
 
-See [RELEASE.md](RELEASE.md). Privacy policy: [docs/privacy-policy.md](docs/privacy-policy.md).
+Crashlytics (Android and iOS), Analytics and Remote Config (Android) are enabled only when the
+Firebase configs are present: `composeApp/google-services.json` and
+`iosApp/iosApp/GoogleService-Info.plist`. They are not in the repository; without them the app
+builds and runs without Firebase.
+
+## Privacy policy
+
+[docs/privacy-policy.md](docs/privacy-policy.md)
 
 ## Authors
 

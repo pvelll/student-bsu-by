@@ -25,6 +25,9 @@ kotlin {
         iosTarget.binaries.framework {
             baseName = "ComposeApp"
             isStatic = true
+            // Line tables for release builds too: they end up in the app's dSYM, so Crashlytics
+            // shows Kotlin files and line numbers.
+            freeCompilerArgs += "-Xadd-light-debug=enable"
         }
     }
 

@@ -117,6 +117,8 @@
     <string name="setting_collect_statistics_helper">Вся статистика собирается анонимно и не содержит личной информации.</string>
     <string name="setting_collect_crashlytics">Отправлять отчеты об ошибках</string>
     <string name="setting_collect_crashlytics_helper">Отправляя отчеты об ошибках, Вы помогаете приложению становиться лучше.</string>
+    <string name="setting_test_crash">Тестовый сбой</string>
+    <string name="setting_test_crash_helper">Только в debug-сборке: приложение закроется, отчёт появится в Crashlytics после повторного запуска.</string>
     <string name="appearance">Внешний вид</string>
     <string name="settings_dark_theme_system">Использовать системную тему</string>
     <string name="settings_dark_theme_forsed">Темная тема</string>
