@@ -200,6 +200,7 @@ private class UpdateRequestedHandler(
                     SubjectsEvent.SubjectsSearchChanged(searchState.current))
             }
             .catch {
+                it.reportIfUnexpected()
                 if (subjectsMapper.current !is DataState.Success) {
                     subjectsMapper.map(
                         DataState.Error(

@@ -1,7 +1,5 @@
 package github.sushkpavel.studentbsuby.repo
 
-import com.fleeksoft.ksoup.Ksoup
-import com.fleeksoft.ksoup.nodes.Element
 import github.sushkpavel.studentbsuby.api.PaidServicesApi
 import github.sushkpavel.studentbsuby.dao.PaidServicesDao
 import github.sushkpavel.studentbsuby.data.models.*
@@ -10,13 +8,6 @@ import github.sushkpavel.studentbsuby.resources.hostel_payment
 import github.sushkpavel.studentbsuby.util.ResourceManager
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import kotlinx.datetime.DateTimeUnit
-import kotlinx.datetime.LocalDate
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.atTime
-import kotlinx.datetime.plus
-import kotlinx.datetime.toInstant
-import kotlin.time.ExperimentalTime
 
 class PaidServicesRepository(
     usernameProvider: UsernameProvider,
@@ -25,22 +16,20 @@ class PaidServicesRepository(
     resources : ResourceManager
 ) {
 
-    private val dateFormat = SimpleDateFormat("dd.mm.yyyy")
-
     private val infoAndBillsRepository: Repository<Pair<PaidServicesInfo, List<Bill>>> =
-        InfoAndBillsRepository(usernameProvider, api, dao, dateFormat)
+        InfoAndBillsRepository(usernameProvider, api, dao)
 
     private val tuitionFeeRepository: Repository<List<TuitionFeePayment>> =
-        TuitionFeeReceiptsRepository(usernameProvider, api, dao, dateFormat)
+        TuitionFeeReceiptsRepository(usernameProvider, api, dao)
 
     private val academDebtRepository : Repository<List<Receipt>> =
-        AcademDebtRepository(usernameProvider,api,dao,dateFormat)
+        AcademDebtRepository(usernameProvider,api,dao)
 
     private val hostelBillsRepository : Repository<List<Bill>> =
-        HostelBillsRepository( usernameProvider ,api, dao, dateFormat, resources)
+        HostelBillsRepository( usernameProvider ,api, dao, resources)
 
     private val commonReceiptsRepository : Repository<List<Receipt>> =
-        CommonReceiptsRepository(usernameProvider, api, dao, dateFormat)
+        CommonReceiptsRepository(usernameProvider, api, dao)
 
     val eripUrl get() = "https://student.bsu.by/PersonalCabinet/Pay/docs/%D0%98%D0%BD%D1%81%D1%82%D1%80%D1%83%D0%BA%D1%86%D0%B8%D1%8F%20%D0%BE%20%D0%BF%D1%80%D0%BE%D0%B2%D0%B5%D0%B4%D0%B5%D0%BD%D0%B8%D0%B8%20%D0%BE%D0%BF%D0%BB%D0%B0%D1%82%D1%8B%20%D1%87%D0%B5%D1%80%D0%B5%D0%B7%20%D0%90%D0%98%D0%A1%20%D0%95%D0%A0%D0%98%D0%9F.pdf"
 
@@ -63,40 +52,14 @@ private class CommonReceiptsRepository(
     private val usernameProvider: UsernameProvider,
     private val api: PaidServicesApi,
     private val dao: PaidServicesDao,
-    private val dateFormat: DateFormat,
 ) : CacheWebRepository<List<Receipt>>() {
 
     override suspend fun getFromCache(): List<Receipt>? = kotlin.runCatching{
         dao.getReceipts(usernameProvider.username, Receipt.TYPE_COMMON)
     }.getOrNull()
 
-    override suspend fun getFromWeb(): List<Receipt>? {
-        return Ksoup.parse(api.common().html())
-            .getElementsByTag("tbody")
-            .lastOrNull()
-            ?.getElementsByTag("tr")
-            ?.toList()
-            ?.drop(1)
-            ?.dropLast(1)
-            ?.mapNotNull { elem ->
-                kotlin.runCatching {
-                    elem.getElementsByTag("td")
-                        ?.takeIf { it.size == 5 }
-                        ?.mapNotNull(Element::text)
-                        ?.let {
-                            Receipt(
-                                owner = usernameProvider.username,
-                                deadline = dateFormat.parse(it[0])!!.time,
-                                price = it[1].toFloatOrNull(),
-                                left = it[2].toFloatOrNull(),
-                                date = dateFormat.parse(it[3])?.time,
-                                info = it[4],
-                                receiptType = Receipt.TYPE_COMMON,
-                            )
-                        }
-                }.getOrNull()
-            }
-    }
+    override suspend fun getFromWeb(): List<Receipt>? =
+        PaidServicesParser.parseReceipts(api.common().html(), usernameProvider.username, Receipt.TYPE_COMMON)
 
     override suspend fun saveToCache(value: List<Receipt>) {
         kotlin.runCatching {
@@ -110,7 +73,6 @@ private class HostelBillsRepository(
     private val usernameProvider: UsernameProvider,
     private val api: PaidServicesApi,
     private val dao: PaidServicesDao,
-    private val dateFormat: DateFormat,
     private val resources: ResourceManager
 ) : CacheWebRepository<List<Bill>>() {
 
@@ -118,31 +80,12 @@ private class HostelBillsRepository(
         dao.getBills(usernameProvider.username, Bill.TYPE_HOSTEL)
     }.getOrNull()
 
-    override suspend fun getFromWeb(): List<Bill>? {
-        return Ksoup.parse(api.hostelBills().html())
-            .getElementsByTag("tbody")
-            .lastOrNull()
-            ?.getElementsByTag("tr")
-            ?.toList()
-            ?.drop(1)
-            ?.dropLast(1)
-            ?.mapNotNull { elem ->
-                kotlin.runCatching {
-                    elem.getElementsByTag("td")
-                        ?.takeIf { it.size == 2 }
-                        ?.mapNotNull(Element::text)
-                        ?.let {
-                            Bill(
-                                owner = usernameProvider.username,
-                                deadline = dateFormat.parse(it[0])!!.time,
-                                price = it[1].toFloat(),
-                                billType = Bill.TYPE_HOSTEL,
-                                paymentType = resources.getString(Res.string.hostel_payment)
-                            )
-                        }
-                }.getOrNull()
-            }
-    }
+    override suspend fun getFromWeb(): List<Bill>? =
+        PaidServicesParser.parseHostelBills(
+            html = api.hostelBills().html(),
+            owner = usernameProvider.username,
+            paymentType = resources.getString(Res.string.hostel_payment)
+        )
 
     override suspend fun saveToCache(value: List<Bill>) {
         kotlin.runCatching {
@@ -156,41 +99,14 @@ private class AcademDebtRepository(
     private val usernameProvider: UsernameProvider,
     private val api : PaidServicesApi,
     private val dao : PaidServicesDao,
-    private val dateFormat: DateFormat
 ) : CacheWebRepository<List<Receipt>>() {
 
     override suspend fun getFromCache(): List<Receipt>? = kotlin.runCatching {
         dao.getReceipts(usernameProvider.username, Receipt.TYPE_ACADEM_DEBT)
     }.getOrNull()
 
-    override suspend fun getFromWeb(): List<Receipt>? {
-        return Ksoup.parse(api.academicDebt().html())
-            .getElementsByTag("tbody")
-            .lastOrNull()
-            ?.getElementsByTag("tr")
-            ?.toList()
-            ?.drop(1)
-            ?.dropLast(1)
-            ?.mapNotNull { elem ->
-                kotlin.runCatching {
-                    elem.getElementsByTag("td")
-                        ?.takeIf { it.size == 5 }
-                        ?.mapNotNull(Element::text)
-                        ?.let {
-                            Receipt(
-                                owner = usernameProvider.username,
-                                deadline = dateFormat.parse(it[0])!!.time,
-                                price = it[1].toFloatOrNull(),
-                                left = it[2].toFloatOrNull(),
-                                date = kotlin.runCatching { dateFormat.parse(it[3])?.time }
-                                    .getOrNull(),
-                                info = it[4],
-                                receiptType = Receipt.TYPE_ACADEM_DEBT
-                            )
-                        }
-                }.getOrNull()
-            }
-    }
+    override suspend fun getFromWeb(): List<Receipt>? =
+        PaidServicesParser.parseReceipts(api.academicDebt().html(), usernameProvider.username, Receipt.TYPE_ACADEM_DEBT)
 
     override suspend fun saveToCache(value: List<Receipt>) {
         kotlin.runCatching {
@@ -204,7 +120,6 @@ private class InfoAndBillsRepository(
     private val usernameProvider: UsernameProvider,
     private val api : PaidServicesApi,
     private val dao : PaidServicesDao,
-    private val dateFormat: DateFormat
 ) : CacheWebRepository<Pair<PaidServicesInfo, List<Bill>>>() {
 
     override suspend fun getFromCache(): Pair<PaidServicesInfo, List<Bill>>? = kotlin.runCatching {
@@ -213,58 +128,8 @@ private class InfoAndBillsRepository(
         }
     }.getOrNull()
 
-    override suspend fun getFromWeb(): Pair<PaidServicesInfo, List<Bill>>? {
-
-        val jsoup = Ksoup.parse(api.info().html())
-
-        val contNum =
-            jsoup.getElementById("ctl00_ctl00_ctl00_ContentPlaceHolder0_ContentPlaceHolder1_ContentPlaceHolder1_lbDogNum")
-                ?.text()?.split(" ")?.lastOrNull() ?: return null
-
-        val debt =
-            jsoup.getElementById("ctl00_ctl00_ctl00_ContentPlaceHolder0_ContentPlaceHolder1_ContentPlaceHolder1_lDolg")
-                ?.text()?.toFloatOrNull() ?: return null
-
-        val fine =
-            jsoup.getElementById("ctl00_ctl00_ctl00_ContentPlaceHolder0_ContentPlaceHolder1_ContentPlaceHolder1_lPeny")
-                ?.text()?.toFloatOrNull() ?: return null
-
-        val price =
-            jsoup.getElementById("ctl00_ctl00_ctl00_ContentPlaceHolder0_ContentPlaceHolder1_ContentPlaceHolder1_lPrice")
-                ?.text()?.toFloatOrNull()
-
-        val billsData =
-            jsoup.getElementById("ctl00_ctl00_ctl00_ContentPlaceHolder0_ContentPlaceHolder1_ContentPlaceHolder1_gv")
-                ?.getElementsByAttributeValue("valign", "middle")
-                ?.filter { !it.hasAttr("scope") }
-                ?.map { it.text() }
-                ?.chunked(3)
-
-        val billsAndTotal = billsData?.take(billsData.size - 1)?.mapNotNull {
-            if (it.size == 3)
-                Bill(
-                    owner = usernameProvider.username,
-                    paymentType = it[0],
-                    deadline = dateFormat.parse(it[1])!!.time,
-                    price = it[2].toFloatOrNull() ?: 0f,
-                    billType = Bill.TYPE_PAIDINFO
-                )
-            else null
-        }
-        val bills = billsAndTotal?.subList(
-            fromIndex = 0,
-            toIndex = billsAndTotal.lastIndex - 1
-        )
-
-
-        return PaidServicesInfo(
-            owner = usernameProvider.username,
-            contractNumber = contNum,
-            debt = debt,
-            fine = fine,
-            price = price,
-        ) to bills.orEmpty()
-    }
+    override suspend fun getFromWeb(): Pair<PaidServicesInfo, List<Bill>>? =
+        PaidServicesParser.parseInfo(api.info().html(), usernameProvider.username)
 
     override suspend fun saveToCache(value: Pair<PaidServicesInfo, List<Bill>>) {
         kotlin.runCatching {
@@ -279,7 +144,6 @@ private class TuitionFeeReceiptsRepository(
     private val usernameProvider: UsernameProvider,
     private val api : PaidServicesApi,
     private val dao : PaidServicesDao,
-    private val dateFormat: DateFormat
 ) : CacheWebRepository<List<TuitionFeePayment>>() {
 
     override suspend fun getFromCache(): List<TuitionFeePayment>? = kotlin.runCatching {
@@ -287,79 +151,12 @@ private class TuitionFeeReceiptsRepository(
     }.getOrNull()
 
     override suspend fun getFromWeb(): List<TuitionFeePayment>? =
-        Ksoup.parse(api.tuitionFee().html())
-            .getElementsByTag("tbody")
-            .lastOrNull()
-            ?.getElementsByTag("tr")
-            ?.toList()
-            ?.drop(2)
-            ?.dropLast(1)
-            ?.mapNotNull { elem ->
-                kotlin.runCatching {
-                    elem.getElementsByTag("td")
-                        ?.takeIf { it.size == 9 }
-                        ?.mapNotNull(Element::text)
-                        ?.let {
-                            TuitionFeePayment(
-                                owner = usernameProvider.username,
-                                year = it[0],
-                                deadline = dateFormat.parse(it[1])!!.time,
-                                fullPrice = it[2].toFloat(),
-                                date = kotlin.runCatching { dateFormat.parse(it[3])?.time }
-                                    .getOrNull(),
-                                price = it[4].toFloatOrNull(),
-                                left = it[5].toFloatOrNull(),
-                                fineDays = it[6].toIntOrNull() ?: 0,
-                                fineSize = it[7].toFloatOrNull() ?: 0f,
-                                debt = it[8].toFloatOrNull()
-                            )
-                        }
-                }.getOrNull()
-            }
+        PaidServicesParser.parseTuitionFees(api.tuitionFee().html(), usernameProvider.username)
 
     override suspend fun saveToCache(value: List<TuitionFeePayment>) {
         kotlin.runCatching {
             dao.clearTuitionFeeReceipts(usernameProvider.username)
+            value.forEach { dao.insertTuitionFeeReceipt(it) }
         }
-    }
-}
-
-private typealias DateFormat = SimpleDateFormat
-
-private class Date(val time: Long)
-
-@OptIn(ExperimentalTime::class)
-private class SimpleDateFormat(pattern: String) {
-
-    fun parse(source: String): Date? {
-        var pos = 0
-
-        fun readNumber(): Int {
-            val start = pos
-            while (pos < source.length && source[pos].isDigit()) {
-                pos++
-            }
-            require(pos > start) { "Unparseable date: \"$source\"" }
-            return source.substring(start, pos).toInt()
-        }
-
-        fun readSeparator() {
-            require(pos < source.length && source[pos] == '.') { "Unparseable date: \"$source\"" }
-            pos++
-        }
-
-        val day = readNumber()
-        readSeparator()
-        val minute = readNumber()
-        readSeparator()
-        val year = readNumber()
-
-        val dateTime = LocalDate(year, 1, 1)
-            .plus(day - 1 + minute.floorDiv(24 * 60), DateTimeUnit.DAY)
-            .atTime(minute.mod(24 * 60) / 60, minute.mod(60))
-
-        return Date(
-            dateTime.toInstant(TimeZone.currentSystemDefault()).toEpochMilliseconds()
-        )
     }
 }

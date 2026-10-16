@@ -1,5 +1,6 @@
 package github.sushkpavel.studentbsuby.ui.screens.drawer.news
 
+import github.sushkpavel.studentbsuby.util.reportIfUnexpected
 import github.sushkpavel.studentbsuby.resources.Res
 import github.sushkpavel.studentbsuby.resources.error_load_news
 import github.sushkpavel.studentbsuby.data.models.News
@@ -64,6 +65,7 @@ private class UpdateRequestedHandler(
                 }
             }
             .catch {
+                it.reportIfUnexpected()
                 if (newsMapper.current !is DataState.Success){
                     newsMapper.map(DataState.Error(
                         Res.string.error_load_news, it

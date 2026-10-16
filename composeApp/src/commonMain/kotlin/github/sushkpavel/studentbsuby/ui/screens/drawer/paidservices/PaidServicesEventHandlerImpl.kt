@@ -85,23 +85,39 @@ private class UpdateRequestedHandler(
     private suspend fun update(source: DataSource) {
         paidServicesRepository.getInfoAndBills(source)
             .process(
-                { DataState.Success(
-                    paidInfoMapper.current.valueOrNull() to
-                            paidInfoBillsMapper.current.valueOrNull())
+                {
+                    if (paidInfoMapper.current is DataState.Success)
+                        DataState.Success(
+                            paidInfoMapper.current.valueOrNull() to
+                                    paidInfoBillsMapper.current.valueOrNull())
+                    else DataState.Loading
                 },
                 {
-                    if (it is DataState.Success) {
-                        paidInfoMapper.map( it.value.first?.let {
-                            DataState.Success(it)
-                        } ?: DataState.Error(Res.string.error_load_paidinfo))
+                    when (it) {
+                        is DataState.Success -> {
+                            paidInfoMapper.map(it.value.first?.let {
+                                DataState.Success(it)
+                            } ?: DataState.Error(Res.string.error_load_paidinfo))
 
-                        paidInfoBillsMapper.map(
-                            it.value.second?.let {
-                                if (it.isEmpty())
-                                    DataState.Empty
-                                else DataState.Success(it)
-                            } ?: DataState.Error(Res.string.error_load_paidinfo)
-                        )
+                            paidInfoBillsMapper.map(
+                                it.value.second?.let {
+                                    if (it.isEmpty())
+                                        DataState.Empty
+                                    else DataState.Success(it)
+                                } ?: DataState.Error(Res.string.error_load_paidinfo)
+                            )
+                        }
+                        is DataState.Empty -> {
+                            if (paidInfoMapper.current !is DataState.Success)
+                                paidInfoMapper.map(DataState.Empty)
+                            if (paidInfoBillsMapper.current !is DataState.Success)
+                                paidInfoBillsMapper.map(DataState.Empty)
+                        }
+                        is DataState.Error -> {
+                            paidInfoMapper.map(it)
+                            paidInfoBillsMapper.map(it)
+                        }
+                        DataState.Loading -> Unit
                     }
                 },
                 Res.string.error_load_paidinfo
@@ -136,7 +152,7 @@ private class UpdateRequestedHandler(
                 },
                 Res.string.error_load_receipts
             )
-        paidServicesRepository.getTuitionFeeReceipts()
+        paidServicesRepository.getTuitionFeeReceipts(source)
             .process(
                 tutionFeePaymentsMapper::current,
                 {
@@ -159,6 +175,7 @@ private class UpdateRequestedHandler(
             }.onEmpty {
                 set(DataState.Empty)
             }.catch {
+                it.reportIfUnexpected()
                 if (get() !is DataState.Success) {
                     set(DataState.Error(errorMsg, it))
                 }

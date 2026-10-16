@@ -5,11 +5,8 @@ package github.sushkpavel.studentbsuby.util.logger
 import kotlinx.cinterop.BetaInteropApi
 import kotlinx.cinterop.ExperimentalForeignApi
 import platform.Foundation.*
-import platform.UIKit.UIActivityViewController
-import platform.UIKit.UIApplication
+import github.sushkpavel.studentbsuby.util.presentShareSheet
 import platform.UIKit.UIDevice
-import platform.darwin.dispatch_async
-import platform.darwin.dispatch_get_main_queue
 
 internal actual fun platformLogW(tag: String, msg: String, cause: Throwable?) {
     println("W/$tag: $msg")
@@ -85,14 +82,6 @@ actual class LogFileSystem actual constructor() {
     }
 
     actual fun share() {
-        val url = NSURL.fileURLWithPath(logFilePath)
-        dispatch_async(dispatch_get_main_queue()) {
-            val controller = UIActivityViewController(
-                activityItems = listOf(url),
-                applicationActivities = null
-            )
-            UIApplication.sharedApplication.keyWindow?.rootViewController
-                ?.presentViewController(controller, animated = true, completion = null)
-        }
+        presentShareSheet(listOf(NSURL.fileURLWithPath(logFilePath)))
     }
 }

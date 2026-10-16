@@ -1,7 +1,14 @@
 package github.sushkpavel.studentbsuby
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.only
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -37,8 +44,15 @@ fun App() {
 
         AppLockEffects(appLock = appLock, navController = navController)
 
-        Box(Modifier.fillMaxSize()) {
-            Box(if (locked) Modifier.clearAndSetSemantics { } else Modifier) {
+        Box(
+            Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colors.background)
+        ) {
+            Box(
+                (if (locked) Modifier.clearAndSetSemantics { } else Modifier)
+                    .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
+            ) {
                 MainScreen(navController)
             }
             AppLockOverlay(

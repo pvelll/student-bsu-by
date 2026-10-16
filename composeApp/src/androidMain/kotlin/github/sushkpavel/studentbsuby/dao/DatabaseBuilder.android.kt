@@ -7,5 +7,6 @@ import androidx.room.RoomDatabase
 fun appDatabaseBuilder(context: Context): RoomDatabase.Builder<AppDatabase> =
     Room.databaseBuilder<AppDatabase>(
         context = context.applicationContext,
-        name = APP_DATABASE_NAME
+        name = APP_DATABASE_NAME,
+        factory = { AppDatabaseConstructor.initialize() }
     )

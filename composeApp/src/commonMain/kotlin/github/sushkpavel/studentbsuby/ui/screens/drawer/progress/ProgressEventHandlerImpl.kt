@@ -1,5 +1,6 @@
 package github.sushkpavel.studentbsuby.ui.screens.drawer.progress
 
+import github.sushkpavel.studentbsuby.util.reportIfUnexpected
 import github.sushkpavel.studentbsuby.data.models.Subject
 import github.sushkpavel.studentbsuby.repo.CurrentSemesterRepository
 import github.sushkpavel.studentbsuby.repo.DataSource
@@ -95,6 +96,7 @@ private class UpdateRequestedHandler(
                     progressMapper.map(DataState.Empty)
             }
             .catch {
+                it.reportIfUnexpected()
                 if (progressMapper.current !is DataState.Success) {
                     progressMapper.map(
                         DataState.Error(it.toErrorMessage(Res.string.error_load_subjects), it)

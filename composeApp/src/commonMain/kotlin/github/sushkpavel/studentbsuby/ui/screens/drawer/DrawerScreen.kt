@@ -16,6 +16,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -92,6 +93,11 @@ fun DrawerScreen(
     val connection by profileViewModel.connectivityCommunication
         .collectAsState(initial = ConnectivityUi.Connected)
 
+    LaunchedEffect(isTablet) {
+        if (isTablet)
+            scaffoldState.drawerState.close()
+    }
+
     Scaffold(
         scaffoldState = scaffoldState,
         modifier = Modifier.background(MaterialTheme.colors.secondary),
@@ -146,7 +152,8 @@ fun DrawerScreen(
             }
             NavHost(
                 navController = childNavController,
-                startDestination = initial.route.route
+                startDestination = initial.route.route,
+                modifier = Modifier.weight(1f).clipToBounds()
             ) {
                 val animIn = scaleIn(initialScale = .95f) + fadeIn()
                 val animOut = scaleOut(targetScale = .95f) + fadeOut()

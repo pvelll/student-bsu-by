@@ -87,6 +87,7 @@ private class UpdateRequestedHandler(
                 timetableMapper.map(DataState.Empty)
             }
             .catch {
+                it.reportIfUnexpected()
                 if (timetableMapper.current !is DataState.Success){
                     timetableMapper.map(DataState.Error(
                         it.toErrorMessage(Res.string.error_load_timetable), it

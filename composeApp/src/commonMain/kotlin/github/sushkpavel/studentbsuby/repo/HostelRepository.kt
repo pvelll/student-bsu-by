@@ -44,8 +44,8 @@ class HostelRepository(
     fun getHostelNumber(address: String) : Int{
         return address.split(" ",",").let {
             val i = it.indexOf("Общежитие")
-            if (i != -1 && it.size>=i){
-                it[i+1].toIntOrNull() ?: 0
+            if (i != -1 && i + 1 < it.size){
+                it[i + 1].toIntOrNull() ?: 0
             } else 0
         }
     }

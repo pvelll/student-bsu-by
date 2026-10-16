@@ -8,7 +8,6 @@ import platform.Foundation.NSURL
 import platform.Foundation.URLQueryAllowedCharacterSet
 import platform.Foundation.create
 import platform.Foundation.stringByAddingPercentEncodingWithAllowedCharacters
-import platform.UIKit.UIActivityViewController
 import platform.UIKit.UIApplication
 import platform.UserNotifications.UNAuthorizationOptionAlert
 import platform.UserNotifications.UNAuthorizationOptionBadge
@@ -49,12 +48,7 @@ class PlatformActionsIos : PlatformActions {
 
     override fun shareFile(path: String, mime: String) {
         runCatching {
-            val nsUrl = NSURL.fileURLWithPath(path)
-            val activityVC = UIActivityViewController(activityItems = listOf(nsUrl), applicationActivities = null)
-            dispatch_async(dispatch_get_main_queue()) {
-                UIApplication.sharedApplication.keyWindow?.rootViewController
-                    ?.presentViewController(activityVC, animated = true, completion = null)
-            }
+            presentShareSheet(listOf(NSURL.fileURLWithPath(path)))
         }
     }
 
