@@ -22,6 +22,8 @@ val loginModule = module {
             credentialsPreferences = get(named("CredentialsPrefs")),
             captchaRecognizer = get(),
             loginCookieManager = get(),
+            demoAccount = get(),
+            demoMode = get(),
         )
     }
 

@@ -27,7 +27,7 @@ val networkModule = module {
 
     single<LoginCookieManager> { get<PersistentCookiesStorage>() }
 
-    single { createHttpClient(get<PersistentCookiesStorage>(), get()) }
+    single { createHttpClient(get<PersistentCookiesStorage>(), get(), get()) }
 
     single<LoginApi> { LoginApiWrapper(LoginApiImpl(get())) }
 

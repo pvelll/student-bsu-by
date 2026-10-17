@@ -7,6 +7,8 @@ import com.russhwolf.settings.ObservableSettings
 import github.sushkpavel.studentbsuby.api.LoginApi
 import github.sushkpavel.studentbsuby.api.LoginApiWrapper
 import github.sushkpavel.studentbsuby.api.createLoginData
+import github.sushkpavel.studentbsuby.demo.DemoAccount
+import github.sushkpavel.studentbsuby.demo.DemoMode
 import github.sushkpavel.studentbsuby.util.CaptchaRecognizer
 import github.sushkpavel.studentbsuby.util.LoginCookieManager
 import github.sushkpavel.studentbsuby.util.sharedPreferences
@@ -40,6 +42,8 @@ class LoginRepository(
     credentialsPreferences: ObservableSettings,
     private val captchaRecognizer: CaptchaRecognizer,
     private val loginCookieManager: LoginCookieManager,
+    private val demoAccount: DemoAccount,
+    private val demoMode: DemoMode,
     ) : UsernameProviderImpl(credentialsPreferences) {
 
     data class LoginResponse(
@@ -104,6 +108,7 @@ class LoginRepository(
         captcha: String
     ): LoginResponse {
         return try {
+            switchDemoMode(demoAccount.matches(login, password))
 
             val res = api.login(
                 api.createLoginData(
@@ -192,5 +197,15 @@ class LoginRepository(
     fun logout(){
         loginCookieManager.cleanCookies()
         autoLogin = false
+        demoMode.disable()
+    }
+
+    // The demo account is served by DemoSite instead of student.bsu.by, and a session of one
+    // of them means nothing to the other.
+    private fun switchDemoMode(demo: Boolean) {
+        if (demo == demoMode.isEnabled)
+            return
+        loginCookieManager.cleanCookies()
+        if (demo) demoMode.enable() else demoMode.disable()
     }
 }
