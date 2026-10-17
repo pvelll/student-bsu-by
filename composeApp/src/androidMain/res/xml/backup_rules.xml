@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Auto Backup on Android 6-11. Android 12+ reads data_extraction_rules.xml instead. -->
+<full-backup-content>
+    <!-- Encrypted with a Keystore key that never leaves the device: restored on another
+         device they can not be decrypted. The "_plain" fallbacks hold the same data
+         unencrypted and must not reach the cloud either. -->
+    <exclude domain="sharedpref" path="github.sushkpavel.studentbsuby_credentials.xml" />
+    <exclude domain="sharedpref" path="github.sushkpavel.studentbsuby_credentials_plain.xml" />
+    <exclude domain="sharedpref" path="github.sushkpavel.studentbsuby_cookies.xml" />
+    <exclude domain="sharedpref" path="github.sushkpavel.studentbsuby_cookies_plain.xml" />
+</full-backup-content>

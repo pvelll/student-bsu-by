@@ -46,10 +46,9 @@ class NewsRepository(
             ?.mapNotNull {
                 val id = it[0]
                     .getElementsByAttributeValueContaining("href", "id=")
-                    .firstOrNull()
-                    ?.attr("href")
-                    ?.substringAfter("=", "0")
-                    ?.toInt()  ?: return@mapNotNull null
+                    .firstNotNullOfOrNull { link -> newsId.find(link.attr("href")) }
+                    ?.groupValues?.get(1)
+                    ?.toIntOrNull() ?: return@mapNotNull null
                 News(
                     id = id,
                     title = it[0].text().trim(),
@@ -76,6 +75,8 @@ class NewsRepository(
         id, dao, api
     ).get(dataSource)
 }
+
+private val newsId = Regex("""id=(\d+)""", RegexOption.IGNORE_CASE)
 
 fun <T> List<T>.groupUnless(predicate : (T) -> Boolean) : List<List<T>>{
     val result = mutableListOf<List<T>>()

@@ -1,5 +1,6 @@
 package github.sushkpavel.studentbsuby.ui.screens.drawer
 
+import github.sushkpavel.studentbsuby.util.reportIfUnexpected
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import github.sushkpavel.studentbsuby.resources.Res
@@ -157,6 +158,7 @@ private class UpdateRequestedHandler(
                     imageMapper.map(DataState.Empty)
                 }
                 .catch {
+                    it.reportIfUnexpected()
                     if (imageMapper.current !is DataState.Success) {
                         imageMapper.map(
                             DataState.Error(
@@ -175,6 +177,7 @@ private class UpdateRequestedHandler(
                     userMapper.map(DataState.Empty)
                 }
                 .catch {
+                    it.reportIfUnexpected()
                     if (userMapper.current !is DataState.Success) {
                         userMapper.map(
                             DataState.Error(

@@ -9,6 +9,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.navigation.compose.NavHost
@@ -75,7 +76,11 @@ fun NewsScreen(
                 )
             }
         ) {
-            NavHost(navController = navController, startDestination = items[0].route) {
+            NavHost(
+                navController = navController,
+                startDestination = items[0].route,
+                modifier = Modifier.clipToBounds()
+            ) {
                 animatedComposable(Route.DrawerScreen.News.NewsList) {
                     currentRoute = Route.DrawerScreen.News.NewsList.route
                     NewsListScreen(

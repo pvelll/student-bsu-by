@@ -31,6 +31,7 @@ import github.sushkpavel.studentbsuby.ui.common.BsuProgressBar
 import github.sushkpavel.studentbsuby.ui.common.ErrorWidget
 import github.sushkpavel.studentbsuby.ui.theme.values.Colors
 import github.sushkpavel.studentbsuby.util.LoginCookieManager
+import github.sushkpavel.studentbsuby.util.reportIfUnexpected
 import kotlinx.coroutines.flow.catch
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
@@ -45,7 +46,10 @@ actual fun NewsDetailsScreen(id: Int, viewModel: NewsViewModel) {
 
     LaunchedEffect(id) {
         newsRepository.getNewsItem(id, DataSource.All)
-            .catch { failed = true }
+            .catch {
+                it.reportIfUnexpected()
+                failed = true
+            }
             .collect { content = it }
     }
 

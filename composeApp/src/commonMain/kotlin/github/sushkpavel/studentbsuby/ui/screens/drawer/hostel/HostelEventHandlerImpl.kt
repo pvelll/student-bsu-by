@@ -1,5 +1,6 @@
 package github.sushkpavel.studentbsuby.ui.screens.drawer.hostel
 
+import github.sushkpavel.studentbsuby.util.reportIfUnexpected
 import github.sushkpavel.studentbsuby.resources.Res
 import github.sushkpavel.studentbsuby.resources.error_load_hostel
 import github.sushkpavel.studentbsuby.repo.DataSource
@@ -71,6 +72,7 @@ private class UpdateRequestedHandler(
                 hostelStateMapper.map(DataState.Empty)
             }
             .catch {
+                it.reportIfUnexpected()
                 if (hostelStateMapper.current !is DataState.Success){
                     hostelStateMapper.map(DataState.Error(
                         Res.string.error_load_hostel, it

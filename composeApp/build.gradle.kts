@@ -1,4 +1,8 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.objectweb.asm.ClassReader
+import org.objectweb.asm.ClassVisitor
+import org.objectweb.asm.MethodVisitor
+import org.objectweb.asm.Opcodes
 import java.util.Properties
 
 plugins {
@@ -137,6 +141,11 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
+        isCoreLibraryDesugaringEnabled = true
+    }
+
+    lint {
+        fatal += "NewApi"
     }
 
     buildTypes {
@@ -170,9 +179,74 @@ room {
 }
 
 dependencies {
+    add("coreLibraryDesugaring", libs.desugar.jdk.libs)
     add("kspAndroid", libs.room.compiler)
     add("kspIosArm64", libs.room.compiler)
     add("kspIosSimulatorArm64", libs.room.compiler)
+}
+
+abstract class CheckJava21CollectionCalls : DefaultTask() {
+
+    @get:InputDirectory
+    @get:PathSensitive(PathSensitivity.RELATIVE)
+    abstract val classes: DirectoryProperty
+
+    private val owners = setOf(
+        "java/util/Collection", "java/util/List", "java/util/ArrayList", "java/util/AbstractList",
+        "java/util/SequencedCollection", "java/util/SequencedSet", "java/util/SequencedMap",
+        "java/util/LinkedHashSet", "java/util/LinkedHashMap", "java/util/SortedSet",
+        "java/util/TreeSet", "java/util/SortedMap",
+    )
+
+    private val methods = setOf(
+        "removeFirst", "removeLast", "getFirst", "getLast", "addFirst", "addLast", "reversed",
+        "putFirst", "putLast", "sequencedKeySet", "sequencedValues", "sequencedEntrySet",
+    )
+
+    @TaskAction
+    fun check() {
+        val calls = mutableListOf<String>()
+        classes.get().asFileTree.matching { include("**/*.class") }.forEach { file ->
+            ClassReader(file.readBytes()).accept(object : ClassVisitor(Opcodes.ASM9) {
+                private var className = ""
+
+                override fun visit(
+                    version: Int, access: Int, name: String, signature: String?,
+                    superName: String?, interfaces: Array<out String>?,
+                ) {
+                    className = name.replace('/', '.')
+                }
+
+                override fun visitMethod(
+                    access: Int, name: String, descriptor: String, signature: String?,
+                    exceptions: Array<out String>?,
+                ): MethodVisitor = object : MethodVisitor(Opcodes.ASM9) {
+                    override fun visitMethodInsn(
+                        opcode: Int, owner: String, method: String, methodDescriptor: String,
+                        isInterface: Boolean,
+                    ) {
+                        if (owner in owners && method in methods)
+                            calls += "$className.$name() calls ${owner.replace('/', '.')}.$method (Android 15+)"
+                    }
+                }
+            }, ClassReader.SKIP_FRAMES)
+        }
+        if (calls.isNotEmpty())
+            throw GradleException(
+                "Java 21 collection methods crash with NoSuchMethodError below Android 15:\n" +
+                        calls.distinct().joinToString("\n") { "  $it" }
+            )
+    }
+}
+
+listOf("Debug", "Release").forEach { variant ->
+    val check = tasks.register<CheckJava21CollectionCalls>("check${variant}Java21CollectionCalls") {
+        group = "verification"
+        classes.set(layout.buildDirectory.dir("tmp/kotlin-classes/${variant.lowercase()}"))
+        dependsOn("compile${variant}KotlinAndroid")
+    }
+    tasks.matching { it.name in setOf("assemble$variant", "bundle$variant", "check") }
+        .configureEach { dependsOn(check) }
 }
 
 // Firebase is optional: the plugins are applied only when google-services.json is supplied,
