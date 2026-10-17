@@ -1,5 +1,8 @@
 package github.sushkpavel.studentbsuby.network
 
+import github.sushkpavel.studentbsuby.demo.DemoMode
+import github.sushkpavel.studentbsuby.demo.DemoRoutingEngine
+import github.sushkpavel.studentbsuby.demo.DemoSite
 import github.sushkpavel.studentbsuby.util.PlatformInfo
 import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
@@ -25,8 +28,9 @@ private const val USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleW
 
 fun createHttpClient(
     cookiesStorage: CookiesStorage,
-    platformInfo: PlatformInfo
-) : HttpClient = HttpClient(httpClientEngine()) {
+    platformInfo: PlatformInfo,
+    demoMode: DemoMode,
+) : HttpClient = HttpClient(DemoRoutingEngine(httpClientEngine().create(), DemoSite(), demoMode)) {
     bsuClientConfig(cookiesStorage, logger = Logger.SIMPLE.takeIf { platformInfo.isDebug })
 }
 

@@ -10,6 +10,8 @@ keystore.properties
 # SDK paths and other machine-local overrides
 local.properties
 secrets.properties
+# App Review demo account: the app keeps only its digest (see RELEASE.md)
+demo-account.properties
 .env
 .env.*
 !.env.example

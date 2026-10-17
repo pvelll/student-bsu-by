@@ -14,6 +14,7 @@ jbLifecycle = "2.11.0"
 jbNavigation = "2.10.0-beta01"
 coil = "3.6.2"
 ksoup = "0.2.6"
+okio = "3.18.1"
 multiplatformSettings = "1.3.0"
 materialIconsExtended = "1.7.3"
 activityCompose = "1.13.0"
@@ -61,8 +62,11 @@ coil-network-ktor3 = { module = "io.coil-kt.coil3:coil-network-ktor3", version.r
 
 ksoup = { module = "com.fleeksoft.ksoup:ksoup", version.ref = "ksoup" }
 
+okio = { module = "com.squareup.okio:okio", version.ref = "okio" }
+
 multiplatform-settings = { module = "com.russhwolf:multiplatform-settings", version.ref = "multiplatformSettings" }
 multiplatform-settings-coroutines = { module = "com.russhwolf:multiplatform-settings-coroutines", version.ref = "multiplatformSettings" }
+multiplatform-settings-test = { module = "com.russhwolf:multiplatform-settings-test", version.ref = "multiplatformSettings" }
 
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
 androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }

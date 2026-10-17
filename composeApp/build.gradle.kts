@@ -67,6 +67,7 @@ kotlin {
             implementation(libs.coil.network.ktor3)
 
             implementation(libs.ksoup)
+            implementation(libs.okio)
 
             implementation(libs.multiplatform.settings)
             implementation(libs.multiplatform.settings.coroutines)
@@ -101,6 +102,7 @@ kotlin {
         androidUnitTest.dependencies {
             implementation(kotlin("test"))
             implementation(libs.ktor.client.mock)
+            implementation(libs.multiplatform.settings.test)
         }
     }
 }

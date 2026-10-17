@@ -7,6 +7,7 @@ import org.koin.dsl.KoinAppDeclaration
 
 val sharedModules: List<Module> = listOf(
     appModule,
+    demoModule,
     networkModule,
     databaseModule,
     loginModule,
